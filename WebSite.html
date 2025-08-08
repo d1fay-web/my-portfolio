@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Портфолио — d1fay</title>
+  <meta name="description" content="d1fay — разработчик систем и скриптов для Roblox. Быстрые прототипы, оптимизация и скрипты." />
+  <meta property="og:title" content="d1fay — Developer" />
+  <meta property="og:description" content="Разрабатываю системы и скрипты для Roblox. Примеры и демо." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#020617" />
+  <link rel="preconnect" href="https://img.youtube.com/">
+  <link rel="preconnect" href="https://www.youtube.com/">
+  <style>
+    :root{
+      --bg1:#071241;
+      --blue1:#071433;
+      --accent:#0ea5ff;
+      --glass: rgba(255,255,255,0.03);
+      --glass-2: rgba(255,255,255,0.04);
+      --text: #e6f0ff;
+      --muted: #9fb6d6;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body,#app{height:115%}
+    body{
+      background: radial-gradient(circle at 10% 10%, rgba(14,165,255,0.04), transparent 6%), radial-gradient(circle at 90% 90%, rgba(13,71,161,0.05), transparent 8%), var(--bg1);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow:auto;
+    }
+    .bg-anim{
+      position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:linear-gradient(120deg, rgba(2,6,23,0.6), rgba(7,20,51,0.45) 35%, rgba(2,6,23,0.6));
+      mix-blend-mode:overlay;
+      animation: bgmove 18s linear infinite;
+    }
+    @keyframes bgmove{
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .bg-anim { animation: none; }
+      a,button { transition: none; }
+    }
+    #particles{position:fixed;inset:0;z-index:0}
+    .container{position:relative;z-index:2;max-width:1100px;margin:48px auto;padding:32px}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:28px}
+    .logo{width:68px;height:68px;border-radius:14px;background:linear-gradient(135deg,var(--blue1),#0a2546);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:20px;box-shadow:0 6px 24px rgba(3,8,23,0.7)}
+    h1{font-size:22px}
+    p.lead{color:var(--muted);margin-top:6px}
+    .card{background:linear-gradient(180deg,var(--glass),var(--glass-2));border-radius:14px;padding:18px;backdrop-filter: blur(8px);box-shadow: 0 6px 30px rgba(2,6,23,0.6);}
+    main{display:grid;grid-template-columns:1fr 380px;gap:22px}
+    .about{margin-bottom:14px}
+    .stats{display:flex;gap:12px;margin-top:14px}
+    .stat{padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));min-width:120px;text-align:center}
+    .stat b{display:block;font-size:18px}
+    .work-list{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+    .work{display:flex;gap:12px;align-items:flex-start}
+    .thumb{width:220px;height:124px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#031226;display:flex;align-items:center;justify-content:center;position:relative}
+    .meta{flex:1}
+    .meta h3{font-size:16px;margin-bottom:6px}
+    .meta p{color:var(--muted);font-size:13px}
+    .btn{display:inline-block;padding:8px 12px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.06);cursor:pointer;margin-top:8px}
+    .yt-thumb {cursor:pointer;display:block;width:100%;height:100%;position:relative}
+    .yt-thumb .play {
+      position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:999px;
+      display:flex;align-items:center;justify-content:center;font-weight:700;background:rgba(0,0,0,0.45);backdrop-filter: blur(2px);
+      border:2px solid rgba(255,255,255,0.06);
+    }
+    aside{position:relative}
+    .projects{display:flex;flex-direction:column;gap:10px}
+    .project{padding:10px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));}
+    .lang-switch{margin-left:auto;display:flex;gap:8px}
+    .topbar{display:flex;align-items:center;gap:12px}
+    footer{margin-top:24px;color:var(--muted);font-size:13px}
+    @media(max-width:900px){main{grid-template-columns:1fr} .thumb{width:160px;height:88px} .container{padding:18px} .projects a{font-size:14px}}
+    a{ text-decoration: none; color: #e9fbff; }
+    a:visited{ color: #e9fbff; }
+    a:hover{ color: #cff6ff; text-decoration: none; }
+    a,button{transition:transform .18s ease,box-shadow .18s ease}
+    a:hover,button:hover{transform:translateY(-4px)}
+    :focus{outline:2px solid rgba(14,165,255,0.14);outline-offset:2px}
+    :focus:not(:focus-visible){outline: none}
+    .contact-row{display:flex;gap:10px;margin-top:10px}
+    .icon-btn{width:48px;height:48px;display:inline-flex;align-items:center;justify-content:center;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);text-decoration:none;color:var(--text)}
+    .icon-btn svg{width:22px;height:22px;display:block;fill:currentColor}
+    .icon-btn img{width:22px;height:22px;display:block;filter:brightness(0) invert(1);}
+    .icon-btn:focus{outline:3px solid rgba(14,165,255,0.12);outline-offset:3px}
+    .icon-btn:hover{transform:translateY(-4px)}
+    .lang-switch .btn{background:transparent;color:#e9fbff;border:none;padding:8px 10px;border-radius:8px;box-shadow:none;cursor:pointer}
+    .lang-switch .btn[aria-pressed="true"]{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px;color:#cff6ff}
+    .lang-switch .btn:focus{outline:3px solid rgba(14,165,255,0.12);outline-offset:3px}
+    .icon-btn:focus{outline:3px solid rgba(14,165,255,0.12);outline-offset:3px}
+    .icon-btn:hover{transform:translateY(-4px)}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  </style>
+</head>
+<body>
+  <canvas id="particles" aria-hidden="true"></canvas>
+  <div class="bg-anim" aria-hidden="true"></div>
+  <div class="container card" id="app">
+    <header>
+      <div class="logo" aria-hidden="true">d1</div>
+      <div>
+        <h1 id="title">d1fay — Developer</h1>
+        <p class="lead lang-ru">Разрабатываю системы для Roblox. Быстрые прототипы, оптимизация и скрипты.</p>
+        <p class="lead lang-en">Building systems for Roblox. Fast prototypes, optimization and scripts.</p>
+      </div>
+      <div class="lang-switch" style="margin-left:auto" role="group" aria-label="Language switch">
+        <button class="btn" id="btn-ru" aria-pressed="true">RU</button>
+        <button class="btn" id="btn-en" aria-pressed="false">EN</button>
+      </div>
+    </header>
+    <main>
+      <section aria-labelledby="title">
+        <div class="about">
+          <div class="card">
+            <h2 class="lang-ru">О себе</h2>
+            <h2 class="lang-en">About me</h2>
+            <p class="lang-ru">Я занимаюсь разработкой систем и скриптов для Roblox. За время работы я вложил(а) в проекты суммарно <b>10 миллионов визитов</b>. Работаю быстро — примеры времени разработки под видео указаны возле каждой работы.</p>
+            <p class="lang-en">I develop systems and scripts for Roblox. During my work I contributed a total of <b>10 million visits</b> to projects. I work fast — time spent on each video is shown next to it.</p>
+            <div class="stats">
+              <div class="stat"><small class="lang-ru">Проекты</small><small class="lang-en">Projects</small><b>4</b></div>
+              <div class="stat"><small class="lang-ru">Видео</small><small class="lang-en">Videos</small><b>6</b></div>
+              <div class="stat"><small class="lang-ru">Опыт</small><small class="lang-en">Experience</small><b>2+</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="work-list" id="works">
+          <article class="work card">
+            <div class="thumb">
+              <a href="https://youtu.be/OcBM6O__mj0" class="yt-thumb" data-yt="OcBM6O__mj0" aria-label="Открыть видео Avatar Changer" rel="noopener noreferrer">
+                <img src="https://img.youtube.com/vi/OcBM6O__mj0/hqdefault.jpg" alt="Avatar Changer demo thumbnail" style="width:100%;height:100%;object-fit:cover">
+                <span class="play" aria-hidden="true">▶</span>
+              </a>
+            </div>
+            <div class="meta">
+              <h3 class="lang-ru">Avatar Changer — 10 минут</h3>
+              <h3 class="lang-en">Avatar Changer — 10 minutes</h3>
+              <p class="lang-ru">Короткое демо системы смены аватара.</p>
+              <p class="lang-en">Short demo of an avatar changer.</p>
+              <div style="margin-top:8px">
+                <a class="btn" href="https://youtu.be/OcBM6O__mj0" target="_blank" rel="noopener noreferrer">YouTube</a>
+              </div>
+            </div>
+          </article>
+          <article class="work card">
+            <div class="thumb">
+              <a href="https://www.youtube.com/watch?v=HNldXm4eRdA" class="yt-thumb" data-yt="HNldXm4eRdA" aria-label="Открыть видео Slide System" rel="noopener noreferrer">
+                <img src="https://img.youtube.com/vi/HNldXm4eRdA/hqdefault.jpg" alt="Slide System thumbnail" style="width:100%;height:100%;object-fit:cover">
+                <span class="play" aria-hidden="true">▶</span>
+              </a>
+            </div>
+            <div class="meta">
+              <h3 class="lang-ru">Slide System — 45 минут</h3>
+              <h3 class="lang-en">Slide System — 45 minutes</h3>
+              <p class="lang-ru">Система скольжения с плавной анимацией.</p>
+              <p class="lang-en">Slide system with smooth animation.</p>
+              <div style="margin-top:8px">
+                <a class="btn" href="https://www.youtube.com/watch?v=HNldXm4eRdA" target="_blank" rel="noopener noreferrer">YouTube</a>
+              </div>
+            </div>
+          </article>
+          <article class="work card">
+            <div class="thumb">
+              <a href="https://www.youtube.com/watch?v=dLfGH9ystfc" class="yt-thumb" data-yt="dLfGH9ystfc" aria-label="Open Directional Movement video" rel="noopener noreferrer">
+                <img src="https://img.youtube.com/vi/dLfGH9ystfc/hqdefault.jpg" alt="Directional Movement thumbnail" style="width:100%;height:100%;object-fit:cover">
+                <span class="play" aria-hidden="true">▶</span>
+              </a>
+            </div>
+            <div class="meta">
+              <h3 class="lang-ru">Directional Movement — 30 минут</h3>
+              <h3 class="lang-en">Directional Movement — 30 minutes</h3>
+              <p class="lang-ru">Направленное передвижение персонажа.</p>
+              <p class="lang-en">Directional movement system.</p>
+              <div style="margin-top:8px">
+                <a class="btn" href="https://www.youtube.com/watch?v=dLfGH9ystfc" target="_blank" rel="noopener noreferrer">YouTube</a>
+              </div>
+            </div>
+          </article>
+          <article class="work card">
+            <div class="thumb">
+              <a href="https://www.youtube.com/watch?v=gFNwxx_Rvxo" class="yt-thumb" data-yt="gFNwxx_Rvxo" aria-label="Open Advanced Run System + Crouch video" rel="noopener noreferrer">
+                <img src="https://img.youtube.com/vi/gFNwxx_Rvxo/hqdefault.jpg" alt="Advanced Run thumbnail" style="width:100%;height:100%;object-fit:cover">
+                <span class="play" aria-hidden="true">▶</span>
+              </a>
+            </div>
+            <div class="meta">
+              <h3 class="lang-ru">Advanced Run System + Crouch — 1.5 часа</h3>
+              <h3 class="lang-en">Advanced Run System + Crouch — 1.5 hours</h3>
+              <p class="lang-ru">Расширенные механики бега и приседания.</p>
+              <p class="lang-en">Advanced run and crouch mechanics.</p>
+              <div style="margin-top:8px">
+                <a class="btn" href="https://www.youtube.com/watch?v=gFNwxx_Rvxo" target="_blank" rel="noopener noreferrer">YouTube</a>
+              </div>
+            </div>
+          </article>
+          <article class="work card">
+            <div class="thumb">
+              <a href="https://www.youtube.com/watch?v=N8wPDDrN3bU" class="yt-thumb" data-yt="N8wPDDrN3bU" aria-label="Open Custom Car Shop video" rel="noopener noreferrer">
+                <img src="https://img.youtube.com/vi/N8wPDDrN3bU/hqdefault.jpg" alt="Custom Car Shop thumbnail" style="width:100%;height:100%;object-fit:cover">
+                <span class="play" aria-hidden="true">▶</span>
+              </a>
+            </div>
+            <div class="meta">
+              <h3 class="lang-ru">Custom Car Shop + Car Spawn — 2 часа</h3>
+              <h3 class="lang-en">Custom Car Shop + Car Spawn — 2 hours</h3>
+              <p class="lang-ru">Магазин машин с возможностью спавна.</p>
+              <p class="lang-en">Car shop with spawn system.</p>
+              <div style="margin-top:8px">
+                <a class="btn" href="https://www.youtube.com/watch?v=N8wPDDrN3bU" target="_blank" rel="noopener noreferrer">YouTube</a>
+              </div>
+            </div>
+          </article>
+          <article class="work card">
+            <div class="thumb">
+              <a href="https://www.youtube.com/watch?v=ydsLvvrirTk" class="yt-thumb" data-yt="ydsLvvrirTk" aria-label="Open Parkour System video" rel="noopener noreferrer">
+                <img src="https://img.youtube.com/vi/ydsLvvrirTk/hqdefault.jpg" alt="Parkour System thumbnail" style="width:100%;height:100%;object-fit:cover">
+                <span class="play" aria-hidden="true">▶</span>
+              </a>
+            </div>
+            <div class="meta">
+              <h3 class="lang-ru">Parkour System — 1 час</h3>
+              <h3 class="lang-en">Parkour System — 1 hour</h3>
+              <p class="lang-ру">Быстрая система паркура с простыми правилами.</p>
+              <p class="lang-en">Quick parkour system with simple rules.</p>
+              <div style="margin-top:8px">
+                <a class="btn" href="https://www.youtube.com/watch?v=ydsLvvrirTk" target="_blank" rel="noopener noreferrer">YouTube</a>
+              </div>
+            </div>
+          </article>
+        </div>
+        <footer>
+          <p class="lang-ru">Портфолио пополняется, в будущем здесь будет больше работ!</p>
+          <p class="lang-en">The portfolio is growing, and there will be more works here in the future!</p>
+        </footer>
+      </section>
+      <aside>
+        <div class="card">
+          <h3 class="lang-ru">Проекты</h3>
+          <h3 class="lang-en">Projects</h3>
+          <div class="projects" style="margin-top:10px">
+            <a class="project" href="https://www.roblox.com/games/116402140872647/Innocent-HORROR" target="_blank" rel="noopener noreferrer">Innocent🕯️[HORROR]</a>
+            <a class="project" href="https://www.roblox.com/games/16968923069/90" target="_blank" rel="noopener noreferrer">[MOVING] Dashing 90s RP</a>
+            <a class="project" href="https://www.roblox.com/games/118098395632409/Hype-Heist" target="_blank" rel="noopener noreferrer">Hype Heist — (not released)</a>
+            <a class="project" href="https://www.roblox.com/games/14765772149/Russia-Car-Driving-Volgograd" target="_blank" rel="noopener noreferrer">Russia Car Driving — Volgograd</a>
+            <a class="project" href="https://www.roblox.com/games/15897181617/Super-Teamwork-Morphs-Obby" target="_blank" rel="noopener noreferrer">Super Teamwork Morphs (Obby)</a>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="lang-ru">Контакты</h3>
+          <h3 class="lang-en">Contact</h3>
+          <div class="contact-row" role="list">
+            <a class="icon-btn" href="https://discord.gg/AH5xzGTW" target="_blank" rel="noopener noreferrer" aria-label="Discord" title="Discord" role="listitem">
+              <img src="https://cdn-icons-png.flaticon.com/512/11423/11423407.png" alt="Discord" width="22" height="22" />
+            </a>
+            <a class="icon-btn" href="https://www.roblox.com/users/2701912913/profile" target="_blank" rel="noopener noreferrer" aria-label="Roblox" title="Roblox" role="listitem">
+              <img src="https://cdn-icons-png.flaticon.com/512/15069/15069134.png" alt="Roblox" width="22" height="22" />
+            </a>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+  <script>
+    const btnRu = document.getElementById('btn-ru');
+    const btnEn = document.getElementById('btn-en');
+    const LANG_KEY = 'site_lang';
+    function setLang(lang, save = true){
+      document.querySelectorAll('.lang-ru').forEach(el=>{ el.style.display = (lang==='ru') ? '' : 'none'; });
+      document.querySelectorAll('.lang-en').forEach(el=>{ el.style.display = (lang==='en') ? '' : 'none'; });
+      btnRu.setAttribute('aria-pressed', lang==='ru' ? 'true' : 'false');
+      btnEn.setAttribute('aria-pressed', lang==='en' ? 'true' : 'false');
+      if(save) localStorage.setItem(LANG_KEY, lang);
+    }
+    const saved = localStorage.getItem(LANG_KEY) || 'ru';
+    setLang(saved, false);
+    btnRu.addEventListener('click', ()=>setLang('ru'));
+    btnEn.addEventListener('click', ()=>setLang('en'));
+    document.addEventListener('click', function(e){
+      const a = e.target.closest('.yt-thumb');
+      if(!a) return;
+      e.preventDefault();
+      const vid = a.dataset.yt;
+      if(!vid) return;
+      const wrapper = a.parentElement;
+      const iframe = document.createElement('iframe');
+      iframe.setAttribute('src', `https://www.youtube.com/embed/${vid}?autoplay=1&rel=0`);
+      iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
+      iframe.style.border = '0';
+      wrapper.innerHTML = '';
+      wrapper.appendChild(iframe);
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key !== 'Enter' && e.key !== ' ') return;
+      const focused = document.activeElement;
+      if(focused && focused.classList && focused.classList.contains('yt-thumb')){
+        focused.click();
+        e.preventDefault();
+      }
+    });
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let w = canvas.width = innerWidth, h = canvas.height = innerHeight;
+    window.addEventListener('resize', ()=>{ w = canvas.width = innerWidth; h = canvas.height = innerHeight; });
+    const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const maxParticles = innerWidth < 800 ? 50 : 150;
+    const particles = [];
+    if(!isReduced){
+      for(let i=0;i<maxParticles;i++){
+        particles.push({
+          x: Math.random()*w,
+          y: Math.random()*h,
+          r: Math.random()*1.5+0.5,
+          vx: (Math.random()-0.5)*0.3,
+          vy: Math.random()*2+1,
+          opacity: Math.random()*0.3+0.2
+        });
+      }
+    }
+    function frame(){
+      if(isReduced) return;
+      ctx.clearRect(0,0,w,h);
+      for(let p of particles){
+        p.x += p.vx;
+        p.y += p.vy;
+        if(p.y > h) {
+          p.y = -p.r;
+          p.x = Math.random()*w;
+        }
+        if(p.x < -p.r) p.x = w + p.r;
+        if(p.x > w + p.r) p.x = -p.r;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+        ctx.fill();
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+    console.log('Portfolio loaded — language:', localStorage.getItem(LANG_KEY) || 'ru');
+  </script>
+  <script>
+    function setLanguage(lang) {
+        document.querySelectorAll('.lang-ru').forEach(el => el.style.display = (lang === 'ru' ? 'block' : 'none'));
+        document.querySelectorAll('.lang-en').forEach(el => el.style.display = (lang === 'en' ? 'block' : 'none'));
+        document.getElementById('btn-ru').setAttribute('aria-pressed', lang === 'ru');
+        document.getElementById('btn-en').setAttribute('aria-pressed', lang === 'en');
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+        setLanguage('en');
+    });
+    document.getElementById('btn-ru').addEventListener('click', () => setLanguage('ru'));
+    document.getElementById('btn-en').addEventListener('click', () => setLanguage('en'));
+  </script>
+</body>
+</html>
