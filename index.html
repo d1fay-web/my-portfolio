@@ -23,7 +23,7 @@
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
     }
     *{box-sizing:border-box;margin:0;padding:0}
-    html,body,#app{height:150%}
+    html,body,#app{height:175%}
     body{
       background: radial-gradient(circle at 10% 10%, rgba(14,165,255,0.04), transparent 6%), radial-gradient(circle at 90% 90%, rgba(13,71,161,0.05), transparent 8%), var(--bg1);
       color:var(--text);
@@ -52,19 +52,26 @@
     .logo{width:68px;height:68px;border-radius:14px;background:linear-gradient(135deg,var(--blue1),#0a2546);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:20px;box-shadow:0 6px 24px rgba(3,8,23,0.7)}
     h1{font-size:22px}
     p.lead{color:var(--muted);margin-top:6px}
-    .card{background:linear-gradient(180deg,var(--glass),var(--glass-2));border-radius:14px;padding:18px;backdrop-filter: blur(8px);box-shadow: 0 6px 30px rgba(2,6,23,0.6);}
+    .card{background:linear-gradient(180deg,var(--glass),var(--glass-2));border-radius:14px;padding:18px;backdrop-filter: blur(8px);box-shadow: 0 6px 30px rgba(2,6,23,0.6);animation:fadeIn 0.6s ease-in-out}
     main{display:grid;grid-template-columns:1fr 380px;gap:22px}
     .about{margin-bottom:14px}
     .stats{display:flex;gap:12px;margin-top:14px}
     .stat{padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));min-width:120px;text-align:center}
     .stat b{display:block;font-size:18px}
     .work-list{display:flex;flex-direction:column;gap:12px;margin-top:14px}
-    .work{display:flex;gap:12px;align-items:flex-start}
+    .work{display:flex;gap:12px;align-items:flex-start;opacity:0;animation:slideIn 0.5s forwards}
+    .work:nth-child(1){animation-delay:0.1s}
+    .work:nth-child(2){animation-delay:0.2s}
+    .work:nth-child(3){animation-delay:0.3s}
+    .work:nth-child(4){animation-delay:0.4s}
+    .work:nth-child(5){animation-delay:0.5s}
+    .work:nth-child(6){animation-delay:0.6s}
     .thumb{width:220px;height:124px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#031226;display:flex;align-items:center;justify-content:center;position:relative}
     .meta{flex:1}
     .meta h3{font-size:16px;margin-bottom:6px}
     .meta p{color:var(--muted);font-size:13px}
-    .btn{display:inline-block;padding:8px 12px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.06);cursor:pointer;margin-top:8px}
+    .btn{display:inline-block;padding:8px 12px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.06);cursor:pointer;margin-top:8px;transition:transform 0.3s ease, box-shadow 0.3s ease}
+    .btn:hover{transform:translateY(-4px);box-shadow:0 4px 12px rgba(0,0,0,0.1)}
     .yt-thumb {cursor:pointer;display:block;width:100%;height:100%;position:relative}
     .yt-thumb .play {
       position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:999px;
@@ -77,7 +84,27 @@
     .lang-switch{margin-left:auto;display:flex;gap:8px}
     .topbar{display:flex;align-items:center;gap:12px}
     footer{margin-top:24px;color:var(--muted);font-size:13px}
-    @media(max-width:900px){main{grid-template-columns:1fr} .thumb{width:160px;height:88px} .container{padding:18px} .projects a{font-size:14px}}
+    @keyframes fadeIn {
+      from {opacity:0;transform:translateY(20px)}
+      to {opacity:1;transform:translateY(0)}
+    }
+    @keyframes slideIn {
+      from {opacity:0;transform:translateX(-20px)}
+      to {opacity:1;transform:translateX(0)}
+    }
+    @media(max-width:900px){
+      main{grid-template-columns:1fr}
+      .thumb{width:160px;height:88px}
+      .container{padding:18px}
+      .projects a{font-size:14px}
+    }
+    @media(max-width:600px){
+      .logo{width:50px;height:50px;font-size:16px}
+      h1{font-size:18px}
+      .stat{min-width:100px}
+      .thumb{width:120px;height:68px}
+      .contact-row{justify-content:center}
+    }
     a{ text-decoration: none; color: #e9fbff; }
     a:visited{ color: #e9fbff; }
     a:hover{ color: #cff6ff; text-decoration: none; }
@@ -94,8 +121,6 @@
     .lang-switch .btn{background:transparent;color:#e9fbff;border:none;padding:8px 10px;border-radius:8px;box-shadow:none;cursor:pointer}
     .lang-switch .btn[aria-pressed="true"]{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px;color:#cff6ff}
     .lang-switch .btn:focus{outline:3px solid rgba(14,165,255,0.12);outline-offset:3px}
-    .icon-btn:focus{outline:3px solid rgba(14,165,255,0.12);outline-offset:3px}
-    .icon-btn:hover{transform:translateY(-4px)}
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   </style>
 </head>
@@ -121,10 +146,10 @@
           <div class="card">
             <h2 class="lang-ru">О себе</h2>
             <h2 class="lang-en">About me</h2>
-            <p class="lang-ru">Я занимаюсь разработкой систем и скриптов для Roblox. За время работы я вложил в проекты суммарно <b>10 миллионов визитов</b>. Работаю быстро — примеры времени разработки под видео указаны возле каждой работы.</p>
+            <p class="lang-ru">Я занимаюсь разработкой систем и скриптов для Roblox. За время работы я вложил(а) в проекты суммарно <b>10 миллионов визитов</b>. Работаю быстро — примеры времени разработки под видео указаны возле каждой работы.</p>
             <p class="lang-en">I develop systems and scripts for Roblox. During my work I contributed a total of <b>10 million visits</b> to projects. I work fast — time spent on each video is shown next to it.</p>
             <div class="stats">
-              <div class="stat"><small class="lang-ru">Проекты</small><small class="lang-en">Projects</small><b>5</b></div>
+              <div class="stat"><small class="lang-ru">Проекты</small><small class="lang-en">Projects</small><b>4</b></div>
               <div class="stat"><small class="lang-ru">Видео</small><small class="lang-en">Videos</small><b>6</b></div>
               <div class="stat"><small class="lang-ru">Опыт</small><small class="lang-en">Experience</small><b>2+</b></div>
             </div>
@@ -134,7 +159,7 @@
           <article class="work card">
             <div class="thumb">
               <a href="https://youtu.be/OcBM6O__mj0" class="yt-thumb" data-yt="OcBM6O__mj0" aria-label="Открыть видео Avatar Changer" rel="noopener noreferrer">
-                <img src="https://img.youtube.com/vi/OcBM6O__mj0/hqdefault.jpg" alt="Avatar Changer demo thumbnail" style="width:100%;height:100%;object-fit:cover">
+                <img src="https://img.youtube.com/vi/OcBM6O__mj0/hqdefault.jpg" alt="Avatar Changer demo thumbnail" style="width:100%;height:100%;object-fit:cover" loading="lazy">
                 <span class="play" aria-hidden="true">▶</span>
               </a>
             </div>
@@ -151,7 +176,7 @@
           <article class="work card">
             <div class="thumb">
               <a href="https://www.youtube.com/watch?v=HNldXm4eRdA" class="yt-thumb" data-yt="HNldXm4eRdA" aria-label="Открыть видео Slide System" rel="noopener noreferrer">
-                <img src="https://img.youtube.com/vi/HNldXm4eRdA/hqdefault.jpg" alt="Slide System thumbnail" style="width:100%;height:100%;object-fit:cover">
+                <img src="https://img.youtube.com/vi/HNldXm4eRdA/hqdefault.jpg" alt="Slide System thumbnail" style="width:100%;height:100%;object-fit:cover" loading="lazy">
                 <span class="play" aria-hidden="true">▶</span>
               </a>
             </div>
@@ -168,7 +193,7 @@
           <article class="work card">
             <div class="thumb">
               <a href="https://www.youtube.com/watch?v=dLfGH9ystfc" class="yt-thumb" data-yt="dLfGH9ystfc" aria-label="Open Directional Movement video" rel="noopener noreferrer">
-                <img src="https://img.youtube.com/vi/dLfGH9ystfc/hqdefault.jpg" alt="Directional Movement thumbnail" style="width:100%;height:100%;object-fit:cover">
+                <img src="https://img.youtube.com/vi/dLfGH9ystfc/hqdefault.jpg" alt="Directional Movement thumbnail" style="width:100%;height:100%;object-fit:cover" loading="lazy">
                 <span class="play" aria-hidden="true">▶</span>
               </a>
             </div>
@@ -185,7 +210,7 @@
           <article class="work card">
             <div class="thumb">
               <a href="https://www.youtube.com/watch?v=gFNwxx_Rvxo" class="yt-thumb" data-yt="gFNwxx_Rvxo" aria-label="Open Advanced Run System + Crouch video" rel="noopener noreferrer">
-                <img src="https://img.youtube.com/vi/gFNwxx_Rvxo/hqdefault.jpg" alt="Advanced Run thumbnail" style="width:100%;height:100%;object-fit:cover">
+                <img src="https://img.youtube.com/vi/gFNwxx_Rvxo/hqdefault.jpg" alt="Advanced Run thumbnail" style="width:100%;height:100%;object-fit:cover" loading="lazy">
                 <span class="play" aria-hidden="true">▶</span>
               </a>
             </div>
@@ -202,7 +227,7 @@
           <article class="work card">
             <div class="thumb">
               <a href="https://www.youtube.com/watch?v=N8wPDDrN3bU" class="yt-thumb" data-yt="N8wPDDrN3bU" aria-label="Open Custom Car Shop video" rel="noopener noreferrer">
-                <img src="https://img.youtube.com/vi/N8wPDDrN3bU/hqdefault.jpg" alt="Custom Car Shop thumbnail" style="width:100%;height:100%;object-fit:cover">
+                <img src="https://img.youtube.com/vi/N8wPDDrN3bU/hqdefault.jpg" alt="Custom Car Shop thumbnail" style="width:100%;height:100%;object-fit:cover" loading="lazy">
                 <span class="play" aria-hidden="true">▶</span>
               </a>
             </div>
@@ -219,14 +244,14 @@
           <article class="work card">
             <div class="thumb">
               <a href="https://www.youtube.com/watch?v=ydsLvvrirTk" class="yt-thumb" data-yt="ydsLvvrirTk" aria-label="Open Parkour System video" rel="noopener noreferrer">
-                <img src="https://img.youtube.com/vi/ydsLvvrirTk/hqdefault.jpg" alt="Parkour System thumbnail" style="width:100%;height:100%;object-fit:cover">
+                <img src="https://img.youtube.com/vi/ydsLvvrirTk/hqdefault.jpg" alt="Parkour System thumbnail" style="width:100%;height:100%;object-fit:cover" loading="lazy">
                 <span class="play" aria-hidden="true">▶</span>
               </a>
             </div>
             <div class="meta">
               <h3 class="lang-ru">Parkour System — 1 час</h3>
               <h3 class="lang-en">Parkour System — 1 hour</h3>
-              <p class="lang-ру">Быстрая система паркура с простыми правилами.</p>
+              <p class="lang-ru">Быстрая система паркура с простыми правилами.</p>
               <p class="lang-en">Quick parkour system with simple rules.</p>
               <div style="margin-top:8px">
                 <a class="btn" href="https://www.youtube.com/watch?v=ydsLvvrirTk" target="_blank" rel="noopener noreferrer">YouTube</a>
@@ -256,10 +281,10 @@
           <h3 class="lang-en">Contact</h3>
           <div class="contact-row" role="list">
             <a class="icon-btn" href="https://discord.gg/AH5xzGTW" target="_blank" rel="noopener noreferrer" aria-label="Discord" title="Discord" role="listitem">
-              <img src="https://cdn-icons-png.flaticon.com/512/11423/11423407.png" alt="Discord" width="22" height="22" />
+              <img src="https://cdn-icons-png.flaticon.com/512/11423/11423407.png" alt="Discord" width="22" height="22" loading="lazy" />
             </a>
             <a class="icon-btn" href="https://www.roblox.com/users/2701912913/profile" target="_blank" rel="noopener noreferrer" aria-label="Roblox" title="Roblox" role="listitem">
-              <img src="https://cdn-icons-png.flaticon.com/512/15069/15069134.png" alt="Roblox" width="22" height="22" />
+              <img src="https://cdn-icons-png.flaticon.com/512/15069/15069134.png" alt="Roblox" width="22" height="22" loading="lazy" />
             </a>
           </div>
         </div>
@@ -347,20 +372,5 @@
     requestAnimationFrame(frame);
     console.log('Portfolio loaded — language:', localStorage.getItem(LANG_KEY) || 'ru');
   </script>
-  <script>
-    function setLanguage(lang) {
-        document.querySelectorAll('.lang-ru').forEach(el => el.style.display = (lang === 'ru' ? 'block' : 'none'));
-        document.querySelectorAll('.lang-en').forEach(el => el.style.display = (lang === 'en' ? 'block' : 'none'));
-        document.getElementById('btn-ru').setAttribute('aria-pressed', lang === 'ru');
-        document.getElementById('btn-en').setAttribute('aria-pressed', lang === 'en');
-    }
-    window.addEventListener('DOMContentLoaded', () => {
-        setLanguage('en');
-    });
-    document.getElementById('btn-ru').addEventListener('click', () => setLanguage('ru'));
-    document.getElementById('btn-en').addEventListener('click', () => setLanguage('en'));
-  </script>
 </body>
 </html>
-
-
