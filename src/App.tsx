@@ -676,7 +676,7 @@ export function App() {
               <a href="#skills" onClick={(e) => { e.preventDefault(); handleNavClick('skills'); }}>{t.navSkills}</a>
               <a href="#contact" onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>{t.navContact}</a>
             </div>
-            <p className="footer-copy">&copy; 2023 — 2026 d1fay. All rights reserved.</p>
+            <p className="footer-copy">&copy; 2022 — 2026 d1fay. All rights reserved.</p>
           </div>
         </footer>
       </div>
