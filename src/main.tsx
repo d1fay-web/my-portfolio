@@ -2,9 +2,11 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { App } from "./App";
+import { HashRouter } from 'react-router-dom'
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  // 2. Используем HashRouter
+  <HashRouter>
     <App />
-  </StrictMode>
-);
+  </HashRouter>,
+)
