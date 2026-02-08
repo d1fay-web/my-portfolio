@@ -5,7 +5,6 @@ import { App } from "./App";
 import { HashRouter } from 'react-router-dom'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  // 2. Используем HashRouter
   <HashRouter>
     <App />
   </HashRouter>,
