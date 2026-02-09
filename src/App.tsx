@@ -501,7 +501,7 @@ export function App() {
             {[
               { icon: '🎮', count: 15000000, label: t.totalVisits },
               { icon: '🚀', count: 10, label: t.projects },
-              { icon: '⭐', count: 3, label: t.yearsExp },
+              { icon: '⭐', count: 4, label: t.yearsExp },
               { icon: '🤝', count: 25, label: t.clients },
             ].map((stat, i) => (
               <div key={i} className="stat-card reveal">
