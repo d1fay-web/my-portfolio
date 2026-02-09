@@ -18,7 +18,7 @@ export const translations = {
   ru: {
     availableBadge: 'Открыт для предложений',
     heroGreeting: 'Привет, я',
-    heroSubtitle: 'Roblox-разработчик с 3+ годами опыта. Создаю',
+    heroSubtitle: 'Roblox-разработчик с 4+ годами опыта. Создаю',
     viewWorks: '🎬 Смотреть работы',
     contactMe: '💬 Связаться',
     scrollDown: 'Скролль вниз',
@@ -80,7 +80,7 @@ export const translations = {
   en: {
     availableBadge: 'Available for hire',
     heroGreeting: "Hey, I'm",
-    heroSubtitle: 'Roblox developer with 3+ years of experience. Building',
+    heroSubtitle: 'Roblox developer with 4+ years of experience. Building',
     viewWorks: '🎬 View Works',
     contactMe: '💬 Contact Me',
     scrollDown: 'Scroll down',
