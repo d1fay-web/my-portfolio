@@ -1071,15 +1071,15 @@ header.scrolled {
     letter-spacing: 0.5px;
     padding: 8px 14px;
     border-radius: 100px;
-    background: rgba(59, 130, 246, 0.03);      /* было 0.15, стало 0.03 */
+    background: rgba(59, 130, 246, 0.25);
     color: var(--accent);
-    border: 1px solid rgba(59, 130, 246, 0.08); /* было 0.3, стало 0.08 */
+    border: 1px solid rgba(59, 130, 246, 0.5);
 }
 
 .g-tag.proud {
-    background: linear-gradient(135deg, rgba(251, 191, 36, 0.03), rgba(245, 158, 11, 0.03)); /* было 0.2 */
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(245, 158, 11, 0.3));
     color: #fbbf24;
-    border-color: rgba(251, 191, 36, 0.1);     /* было 0.4, стало 0.1 */
+    border-color: rgba(251, 191, 36, 0.6);
     animation: glow 2s ease-in-out infinite alternate;
 }
 
