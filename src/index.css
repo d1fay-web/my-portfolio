@@ -252,8 +252,8 @@ header.scrolled {
 
 /* Logo */
 .logo {
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
   font-size: 32px;
   display: flex;
   align-items: center;
@@ -262,8 +262,9 @@ header.scrolled {
   color: var(--text);
   cursor: pointer;
   position: relative;
-  letter-spacing: -1px;
+  letter-spacing: -2px;
   transition: all 0.3s;
+  text-transform: uppercase; /* опционально */
 }
 
 .logo .logo-accent {
