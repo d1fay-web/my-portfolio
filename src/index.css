@@ -253,17 +253,20 @@ header.scrolled {
 /* Logo */
 .logo {
   font-family: 'Bowlby One', sans-serif;
-  font-weight: 700;
-  font-size: 32px;
+  font-size: 36px;
   display: flex;
   align-items: center;
-  gap: 0;
   text-decoration: none;
   color: var(--text);
   cursor: pointer;
-  position: relative;
-  letter-spacing: -1px;
+  letter-spacing: 0.5px;
   transition: all 0.3s;
+  text-transform: uppercase; /* опционально */
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  color: var(--accent);
 }
 
 .logo .logo-accent {
