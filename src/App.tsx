@@ -40,6 +40,65 @@ const skills = [
 
 const marqueeItems = ['Luau Scripting', 'Game Systems', 'Physics', 'UI/UX Design', 'Optimization', 'Architecture', 'Data Systems', 'Multiplayer'];
 
+// ─── Loading Screen Component ────────────────────────────────────────
+function LoadingScreen({ progress, isExiting }: { progress: number; isExiting: boolean }) {
+  return (
+    <div className={`loading-screen ${isExiting ? 'exit' : ''}`}>
+      {/* Background effects */}
+      <div className="loading-bg-gradient" />
+      <div className="loading-particles">
+        {Array.from({ length: 20 }).map((_, i) => (
+          <div 
+            key={i} 
+            className="loading-particle"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 2}s`,
+              animationDuration: `${3 + Math.random() * 2}s`,
+            }}
+          />
+        ))}
+      </div>
+      
+      {/* Logo */}
+      <div className="loading-content">
+        <div className="loading-logo">
+          <span className="loading-logo-accent">d1</span>fay
+        </div>
+        
+        {/* Subtitle */}
+        <div className="loading-subtitle">Roblox Developer</div>
+        
+        {/* Progress bar */}
+        <div className="loading-progress-container">
+          <div className="loading-progress-bar">
+            <div 
+              className="loading-progress-fill"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          <div className="loading-progress-text">{Math.round(progress)}%</div>
+        </div>
+        
+        {/* Loading status */}
+        <div className="loading-status">
+          {progress < 30 && 'Initializing...'}
+          {progress >= 30 && progress < 60 && 'Loading assets...'}
+          {progress >= 60 && progress < 90 && 'Preparing experience...'}
+          {progress >= 90 && 'Almost ready...'}
+        </div>
+      </div>
+      
+      {/* Corner decorations */}
+      <div className="loading-corner loading-corner-tl" />
+      <div className="loading-corner loading-corner-tr" />
+      <div className="loading-corner loading-corner-bl" />
+      <div className="loading-corner loading-corner-br" />
+    </div>
+  );
+}
+
 // ─── Scroll Indicator Styles ────────────────────────────────────────
 const scrollIndicatorStyles: React.CSSProperties = {
   position: 'absolute',
@@ -85,6 +144,10 @@ const scrollTextStyles: React.CSSProperties = {
 
 // ─── App ────────────────────────────────────────────────────────────
 export function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [isExiting, setIsExiting] = useState(false);
+  
   const [lang, setLang] = useState<Lang>(detectLanguage);
   const [activeTab, setActiveTab] = useState<'showcase' | 'games'>('showcase');
   const [scrolled, setScrolled] = useState(false);
@@ -107,6 +170,37 @@ export function App() {
 
   const t = translations[lang];
 
+  // Loading screen effect
+  useEffect(() => {
+    const duration = 2500; // Total loading time in ms
+    const interval = 30; // Update interval
+    const steps = duration / interval;
+    let currentStep = 0;
+    
+    const timer = setInterval(() => {
+      currentStep++;
+      // Easing function for more natural progress
+      const progress = Math.min(100, (currentStep / steps) * 100 * (1 + Math.random() * 0.1));
+      setLoadingProgress(progress);
+      
+      if (currentStep >= steps) {
+        clearInterval(timer);
+        setLoadingProgress(100);
+        
+        // Start exit animation
+        setTimeout(() => {
+          setIsExiting(true);
+          // Remove loading screen after exit animation
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 600);
+        }, 300);
+      }
+    }, interval);
+    
+    return () => clearInterval(timer);
+  }, []);
+
   const changeLang = useCallback((newLang: Lang) => {
     setLang(newLang);
     localStorage.setItem('lang', newLang);
@@ -123,6 +217,8 @@ export function App() {
 
   // Scroll progress + header scroll state + active section + scroll indicator visibility
   useEffect(() => {
+    if (isLoading) return;
+    
     const onScroll = () => {
       const scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight);
       if (scrollProgressRef.current) {
@@ -153,11 +249,11 @@ export function App() {
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [isLoading]);
 
   // Custom cursor
   useEffect(() => {
-    if (isMobile) return;
+    if (isMobile || isLoading) return;
 
     const onMove = (e: MouseEvent) => {
       mouseRef.current = { x: e.clientX, y: e.clientY };
@@ -218,10 +314,12 @@ export function App() {
       cancelAnimationFrame(animId);
       observer.disconnect();
     };
-  }, [isMobile]);
+  }, [isMobile, isLoading]);
 
   // Particles
   useEffect(() => {
+    if (isLoading) return;
+    
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -299,10 +397,12 @@ export function App() {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', onResize);
     };
-  }, []);
+  }, [isLoading]);
 
   // Typing effect
   useEffect(() => {
+    if (isLoading) return;
+    
     const texts = t.typingTexts;
     let textIdx = 0;
     let charIdx = 0;
@@ -333,10 +433,12 @@ export function App() {
     
     timeout = setTimeout(tick, 500);
     return () => clearTimeout(timeout);
-  }, [lang, t.typingTexts]);
+  }, [lang, t.typingTexts, isLoading]);
 
   // Reveal on scroll
   useEffect(() => {
+    if (isLoading) return;
+    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -349,10 +451,12 @@ export function App() {
     );
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     return () => observer.disconnect();
-  }, [activeTab]);
+  }, [activeTab, isLoading]);
 
   // Counter animation
   useEffect(() => {
+    if (isLoading) return;
+    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(entry => {
@@ -380,7 +484,7 @@ export function App() {
     );
     document.querySelectorAll('.stat-value[data-count]').forEach(el => observer.observe(el));
     return () => observer.disconnect();
-  }, []);
+  }, [isLoading]);
 
   // Inject keyframes for scroll indicator animations
   useEffect(() => {
@@ -447,6 +551,11 @@ export function App() {
     handleNavClick('works');
   };
 
+  // Show loading screen
+  if (isLoading) {
+    return <LoadingScreen progress={loadingProgress} isExiting={isExiting} />;
+  }
+
   return (
     <>
       {/* Scroll Progress */}
@@ -473,13 +582,52 @@ export function App() {
       </div>
       <canvas ref={canvasRef} id="particles-canvas" />
 
-      {/* Header */}
-      <header className={scrolled ? 'scrolled' : ''}>
-        <div className="logo" onClick={handleLogoClick} role="button" tabIndex={0}>
-          <span className="logo-accent">d1</span>fay
-        </div>
+      {/* Main content with entrance animation */}
+      <div className="main-content-enter">
+        {/* Header */}
+        <header className={scrolled ? 'scrolled' : ''}>
+          <div className="logo" onClick={handleLogoClick} role="button" tabIndex={0}>
+            <span className="logo-accent">d1</span>fay
+          </div>
 
-        <nav className="nav-links">
+          <nav className="nav-links">
+            <a href="#works" className={`nav-link ${activeNav === 'works' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('works'); }}>
+              {t.navWorks}
+            </a>
+            <a href="#skills" className={`nav-link ${activeNav === 'skills' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('skills'); }}>
+              {t.navSkills}
+            </a>
+            <a href="#contact" className={`nav-link ${activeNav === 'contact' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>
+              {t.navContact}
+            </a>
+          </nav>
+
+          <div className="nav-right">
+            <div className="lang-switch">
+              <button className={`btn-lang ${lang === 'ru' ? 'active' : ''}`} onClick={() => changeLang('ru')}>RU</button>
+              <button className={`btn-lang ${lang === 'en' ? 'active' : ''}`} onClick={() => changeLang('en')}>EN</button>
+            </div>
+            <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                {mobileMenuOpen ? (
+                  <>
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </>
+                ) : (
+                  <>
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                  </>
+                )}
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        {/* Mobile Nav */}
+        <div className={`mobile-nav ${mobileMenuOpen ? 'open' : ''}`}>
           <a href="#works" className={`nav-link ${activeNav === 'works' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('works'); }}>
             {t.navWorks}
           </a>
@@ -489,293 +637,257 @@ export function App() {
           <a href="#contact" className={`nav-link ${activeNav === 'contact' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>
             {t.navContact}
           </a>
-        </nav>
-
-        <div className="nav-right">
-          <div className="lang-switch">
-            <button className={`btn-lang ${lang === 'ru' ? 'active' : ''}`} onClick={() => changeLang('ru')}>RU</button>
-            <button className={`btn-lang ${lang === 'en' ? 'active' : ''}`} onClick={() => changeLang('en')}>EN</button>
-          </div>
-          <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              {mobileMenuOpen ? (
-                <>
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </>
-              ) : (
-                <>
-                  <line x1="3" y1="6" x2="21" y2="6" />
-                  <line x1="3" y1="12" x2="21" y2="12" />
-                  <line x1="3" y1="18" x2="21" y2="18" />
-                </>
-              )}
-            </svg>
-          </button>
         </div>
-      </header>
 
-      {/* Mobile Nav */}
-      <div className={`mobile-nav ${mobileMenuOpen ? 'open' : ''}`}>
-        <a href="#works" className={`nav-link ${activeNav === 'works' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('works'); }}>
-          {t.navWorks}
-        </a>
-        <a href="#skills" className={`nav-link ${activeNav === 'skills' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('skills'); }}>
-          {t.navSkills}
-        </a>
-        <a href="#contact" className={`nav-link ${activeNav === 'contact' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>
-          {t.navContact}
-        </a>
-      </div>
-
-      {/* Hero */}
-      <div className="container">
-        <section className="hero" style={{ position: 'relative' }}>
-          <div className="hero-badge">
-            <span>✨</span>
-            <span>{t.availableBadge}</span>
-          </div>
-
-          <h1 className="hero-title">
-            <span className="line"><span>{t.heroGreeting}</span></span>
-            <span className="line">
-              <span className="glitch gradient-text" data-text="d1fay">d1fay</span>
-            </span>
-          </h1>
-
-          <p className="hero-subtitle">
-            {t.heroSubtitle}{' '}
-            <span className="typing-text">{typingText}</span>
-          </p>
-
-          <div className="hero-cta">
-            <a href="#works" className="btn btn-primary" onClick={(e) => { e.preventDefault(); handleNavClick('works'); }}>
-              <span>{t.viewWorks}</span>
-            </a>
-            <a href="#contact" className="btn btn-secondary" onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>
-              <span>{t.contactMe}</span>
-            </a>
-          </div>
-
-          {/* Optimized Scroll Indicator */}
-          <div 
-            style={{
-              ...scrollIndicatorStyles,
-              opacity: showScrollIndicator ? 1 : 0,
-              visibility: showScrollIndicator ? 'visible' : 'hidden',
-              transition: 'opacity 0.3s ease, visibility 0.3s ease',
-              cursor: 'pointer',
-            }}
-            onClick={handleScrollIndicatorClick}
-            role="button"
-            tabIndex={0}
-            aria-label={t.scrollDown}
-            onKeyDown={(e) => e.key === 'Enter' && handleScrollIndicatorClick()}
-          >
-            <div style={mouseStyles}>
-              <div style={mouseWheelStyles} />
+        {/* Hero */}
+        <div className="container">
+          <section className="hero" style={{ position: 'relative' }}>
+            <div className="hero-badge">
+              <span>✨</span>
+              <span>{t.availableBadge}</span>
             </div>
-            <span style={scrollTextStyles}>{t.scrollDown}</span>
-          </div>
-        </section>
-      </div>
 
-      {/* Marquee */}
-      <div className="marquee-section">
-        <div className="marquee">
-          {[...marqueeItems, ...marqueeItems].map((item, i) => (
-            <div key={i} className="marquee-item">
-              <span>◆</span> {item}
-            </div>
-          ))}
-        </div>
-      </div>
+            <h1 className="hero-title">
+              <span className="line"><span>{t.heroGreeting}</span></span>
+              <span className="line">
+                <span className="glitch gradient-text" data-text="d1fay">d1fay</span>
+              </span>
+            </h1>
 
-      <div className="container">
-        {/* Stats */}
-        <section style={{ padding: '100px 0' }}>
-          <div className="stats">
-            {[
-              { icon: '🎮', count: 15000000, label: t.totalVisits },
-              { icon: '🚀', count: 10, label: t.projects },
-              { icon: '⭐', count: 4, label: t.yearsExp },
-              { icon: '🤝', count: 25, label: t.clients },
-            ].map((stat, i) => (
-              <div key={i} className="stat-card reveal">
-                <div className="stat-icon">{stat.icon}</div>
-                <div className="stat-value" data-count={stat.count}>0</div>
-                <div className="stat-label">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </section>
+            <p className="hero-subtitle">
+              {t.heroSubtitle}{' '}
+              <span className="typing-text">{typingText}</span>
+            </p>
 
-        {/* Skills */}
-        <section className="reveal" id="skills" style={{ padding: '80px 0' }}>
-          <div className="section-header">
-            <div className="section-label">
-              <span>🛠️</span>
-              <span>{t.mySkills}</span>
-            </div>
-            <h2 className="section-title">{t.techTools}</h2>
-            <p className="section-desc">{t.skillsDesc}</p>
-          </div>
-          <div className="skills-grid">
-            {skills.map((skill, i) => (
-              <div key={i} className="skill-card">
-                <span className="skill-icon">{skill.icon}</span>
-                <span className="skill-name">{skill.name}</span>
-                <div className="skill-level">
-                  <div className="skill-level-bar" style={{ width: `${skill.level}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Works */}
-        <section id="works" style={{ padding: '80px 0' }}>
-          <div className="section-header">
-            <div className="section-label">
-              <span>💼</span>
-              <span>{t.portfolio}</span>
-            </div>
-            <h2 className="section-title">{t.bestWorks}</h2>
-          </div>
-
-          <div className="tabs-container">
-            <nav className="tabs">
-              <button className={`tab-btn ${activeTab === 'showcase' ? 'active' : ''}`} onClick={() => setActiveTab('showcase')}>
-                {t.showcase}
-              </button>
-              <button className={`tab-btn ${activeTab === 'games' ? 'active' : ''}`} onClick={() => setActiveTab('games')}>
-                {t.games}
-              </button>
-            </nav>
-          </div>
-
-          {/* Showcase */}
-          {activeTab === 'showcase' && (
-            <div className="grid-videos" style={{ animation: 'fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)' }}>
-              {videos.map((v) => (
-                <div key={v.id} className="video-item reveal">
-                  {playingVideos.has(v.id) ? (
-                    <div className="yt-iframe-container">
-                      <iframe
-                        src={`https://www.youtube.com/embed/${v.id}?autoplay=1&rel=0`}
-                        allow="autoplay; encrypted-media"
-                        allowFullScreen
-                      />
-                    </div>
-                  ) : (
-                    <div className="thumb" onClick={() => handleVideoPlay(v.id)}>
-                      <img src={`https://img.youtube.com/vi/${v.id}/maxresdefault.jpg`} alt={v.title} />
-                      <div className="play-icon">
-                        <div className="play-btn-circle">▶</div>
-                      </div>
-                    </div>
-                  )}
-                  <div className="v-info">
-                    <h3>{v.title}</h3>
-                    <p>{t[v.descKey]}</p>
-                    <a href={`https://youtu.be/${v.id}`} target="_blank" rel="noopener noreferrer" className="btn-link">Watch →</a>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Games */}
-          {activeTab === 'games' && (
-            <div className="grid-games" style={{ animation: 'fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)' }}>
-              {games.map((game, i) => (
-                <div key={i} className="game-card reveal">
-                  <div className="game-thumb">
-                    <img src={game.img} alt={game.title} />
-                    <div className="game-thumb-overlay" />
-                    <div className="game-thumb-badge">
-                      {game.best && <span className="g-tag proud">🔥 Best</span>}
-                      {game.tags.map((tag, j) => (
-                        <span key={j} className="g-tag">{tag}</span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="game-info">
-                    <h3>{game.title}</h3>
-                    <p>{t[game.descKey]}</p>
-                    <div className="game-footer">
-                      <div className="tags-wrapper" />
-                      <a href={game.url} target="_blank" rel="noopener noreferrer" className="btn-play">
-                        🎮 {t.play}
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-
-        {/* Testimonials */}
-        <section className="reveal" style={{ padding: '100px 0' }}>
-          <div className="section-header">
-            <div className="section-label">
-              <span>💬</span>
-              <span>{t.testimonials}</span>
-            </div>
-            <h2 className="section-title">{t.whatClientsSay}</h2>
-          </div>
-          <div className="testimonials-grid">
-            {[
-              { avatar: 'R', name: 'Roma', role: 'Game Owner', textKey: 'testimonial1' as const },
-              { avatar: 'I', name: 'Ivan', role: 'Studio Lead', textKey: 'testimonial2' as const },
-              { avatar: 'D', name: 'Daniel', role: 'Developer', textKey: 'testimonial3' as const },
-            ].map((review, i) => (
-              <div key={i} className="testimonial-card">
-                <div className="testimonial-header">
-                  <div className="testimonial-avatar">{review.avatar}</div>
-                  <div className="testimonial-info">
-                    <h4>{review.name}</h4>
-                    <span>{review.role}</span>
-                  </div>
-                </div>
-                <p className="testimonial-text">{t[review.textKey]}</p>
-                <div className="testimonial-stars">
-                  {Array.from({ length: 5 }).map((_, j) => <span key={j}>⭐</span>)}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Contact */}
-        <section className="reveal" id="contact" style={{ padding: '100px 0' }}>
-          <div className="contact-card">
-            <h2 className="contact-title">{t.letsWork}</h2>
-            <p className="contact-desc">{t.gotProject}</p>
-            <div className="contact-links">
-              <a href="https://www.roblox.com/users/2701912913/profile" target="_blank" rel="noopener noreferrer" className="contact-btn">
-                <img src="https://i.postimg.cc/7PCNxHj9/Roblox-player-icon-black-svg.png" alt="Roblox" />
-                Roblox
+            <div className="hero-cta">
+              <a href="#works" className="btn btn-primary" onClick={(e) => { e.preventDefault(); handleNavClick('works'); }}>
+                <span>{t.viewWorks}</span>
+              </a>
+              <a href="#contact" className="btn btn-secondary" onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>
+                <span>{t.contactMe}</span>
               </a>
             </div>
-          </div>
-        </section>
 
-        {/* Footer */}
-        <footer>
-          <div className="footer-content">
-            <div className="footer-logo">
-              <span style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent-2))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>d1</span>fay
+            {/* Optimized Scroll Indicator */}
+            <div 
+              style={{
+                ...scrollIndicatorStyles,
+                opacity: showScrollIndicator ? 1 : 0,
+                visibility: showScrollIndicator ? 'visible' : 'hidden',
+                transition: 'opacity 0.3s ease, visibility 0.3s ease',
+                cursor: 'pointer',
+              }}
+              onClick={handleScrollIndicatorClick}
+              role="button"
+              tabIndex={0}
+              aria-label={t.scrollDown}
+              onKeyDown={(e) => e.key === 'Enter' && handleScrollIndicatorClick()}
+            >
+              <div style={mouseStyles}>
+                <div style={mouseWheelStyles} />
+              </div>
+              <span style={scrollTextStyles}>{t.scrollDown}</span>
             </div>
-            <div className="footer-links">
-              <a href="#works" onClick={(e) => { e.preventDefault(); handleNavClick('works'); }}>{t.navWorks}</a>
-              <a href="#skills" onClick={(e) => { e.preventDefault(); handleNavClick('skills'); }}>{t.navSkills}</a>
-              <a href="#contact" onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>{t.navContact}</a>
-            </div>
-            <p className="footer-copy">&copy; 2022 — 2026 d1fay. All rights reserved.</p>
+          </section>
+        </div>
+
+        {/* Marquee */}
+        <div className="marquee-section">
+          <div className="marquee">
+            {[...marqueeItems, ...marqueeItems].map((item, i) => (
+              <div key={i} className="marquee-item">
+                <span>◆</span> {item}
+              </div>
+            ))}
           </div>
-        </footer>
+        </div>
+
+        <div className="container">
+          {/* Stats */}
+          <section style={{ padding: '100px 0' }}>
+            <div className="stats">
+              {[
+                { icon: '🎮', count: 15000000, label: t.totalVisits },
+                { icon: '🚀', count: 10, label: t.projects },
+                { icon: '⭐', count: 4, label: t.yearsExp },
+                { icon: '🤝', count: 25, label: t.clients },
+              ].map((stat, i) => (
+                <div key={i} className="stat-card reveal">
+                  <div className="stat-icon">{stat.icon}</div>
+                  <div className="stat-value" data-count={stat.count}>0</div>
+                  <div className="stat-label">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Skills */}
+          <section className="reveal" id="skills" style={{ padding: '80px 0' }}>
+            <div className="section-header">
+              <div className="section-label">
+                <span>🛠️</span>
+                <span>{t.mySkills}</span>
+              </div>
+              <h2 className="section-title">{t.techTools}</h2>
+              <p className="section-desc">{t.skillsDesc}</p>
+            </div>
+            <div className="skills-grid">
+              {skills.map((skill, i) => (
+                <div key={i} className="skill-card">
+                  <span className="skill-icon">{skill.icon}</span>
+                  <span className="skill-name">{skill.name}</span>
+                  <div className="skill-level">
+                    <div className="skill-level-bar" style={{ width: `${skill.level}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Works */}
+          <section id="works" style={{ padding: '80px 0' }}>
+            <div className="section-header">
+              <div className="section-label">
+                <span>💼</span>
+                <span>{t.portfolio}</span>
+              </div>
+              <h2 className="section-title">{t.bestWorks}</h2>
+            </div>
+
+            <div className="tabs-container">
+              <nav className="tabs">
+                <button className={`tab-btn ${activeTab === 'showcase' ? 'active' : ''}`} onClick={() => setActiveTab('showcase')}>
+                  {t.showcase}
+                </button>
+                <button className={`tab-btn ${activeTab === 'games' ? 'active' : ''}`} onClick={() => setActiveTab('games')}>
+                  {t.games}
+                </button>
+              </nav>
+            </div>
+
+            {/* Showcase */}
+            {activeTab === 'showcase' && (
+              <div className="grid-videos" style={{ animation: 'fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+                {videos.map((v) => (
+                  <div key={v.id} className="video-item reveal">
+                    {playingVideos.has(v.id) ? (
+                      <div className="yt-iframe-container">
+                        <iframe
+                          src={`https://www.youtube.com/embed/${v.id}?autoplay=1&rel=0`}
+                          allow="autoplay; encrypted-media"
+                          allowFullScreen
+                        />
+                      </div>
+                    ) : (
+                      <div className="thumb" onClick={() => handleVideoPlay(v.id)}>
+                        <img src={`https://img.youtube.com/vi/${v.id}/maxresdefault.jpg`} alt={v.title} />
+                        <div className="play-icon">
+                          <div className="play-btn-circle">▶</div>
+                        </div>
+                      </div>
+                    )}
+                    <div className="v-info">
+                      <h3>{v.title}</h3>
+                      <p>{t[v.descKey]}</p>
+                      <a href={`https://youtu.be/${v.id}`} target="_blank" rel="noopener noreferrer" className="btn-link">Watch →</a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Games */}
+            {activeTab === 'games' && (
+              <div className="grid-games" style={{ animation: 'fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+                {games.map((game, i) => (
+                  <div key={i} className="game-card reveal">
+                    <div className="game-thumb">
+                      <img src={game.img} alt={game.title} />
+                      <div className="game-thumb-overlay" />
+                      <div className="game-thumb-badge">
+                        {game.best && <span className="g-tag proud">🔥 Best</span>}
+                        {game.tags.map((tag, j) => (
+                          <span key={j} className="g-tag">{tag}</span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="game-info">
+                      <h3>{game.title}</h3>
+                      <p>{t[game.descKey]}</p>
+                      <div className="game-footer">
+                        <div className="tags-wrapper" />
+                        <a href={game.url} target="_blank" rel="noopener noreferrer" className="btn-play">
+                          🎮 {t.play}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
+          {/* Testimonials */}
+          <section className="reveal" style={{ padding: '100px 0' }}>
+            <div className="section-header">
+              <div className="section-label">
+                <span>💬</span>
+                <span>{t.testimonials}</span>
+              </div>
+              <h2 className="section-title">{t.whatClientsSay}</h2>
+            </div>
+            <div className="testimonials-grid">
+              {[
+                { avatar: 'R', name: 'Roma', role: 'Game Owner', textKey: 'testimonial1' as const },
+                { avatar: 'I', name: 'Ivan', role: 'Studio Lead', textKey: 'testimonial2' as const },
+                { avatar: 'D', name: 'Daniel', role: 'Developer', textKey: 'testimonial3' as const },
+              ].map((review, i) => (
+                <div key={i} className="testimonial-card">
+                  <div className="testimonial-header">
+                    <div className="testimonial-avatar">{review.avatar}</div>
+                    <div className="testimonial-info">
+                      <h4>{review.name}</h4>
+                      <span>{review.role}</span>
+                    </div>
+                  </div>
+                  <p className="testimonial-text">{t[review.textKey]}</p>
+                  <div className="testimonial-stars">
+                    {Array.from({ length: 5 }).map((_, j) => <span key={j}>⭐</span>)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Contact */}
+          <section className="reveal" id="contact" style={{ padding: '100px 0' }}>
+            <div className="contact-card">
+              <h2 className="contact-title">{t.letsWork}</h2>
+              <p className="contact-desc">{t.gotProject}</p>
+              <div className="contact-links">
+                <a href="https://www.roblox.com/users/2701912913/profile" target="_blank" rel="noopener noreferrer" className="contact-btn">
+                  <img src="https://i.postimg.cc/7PCNxHj9/Roblox-player-icon-black-svg.png" alt="Roblox" />
+                  Roblox
+                </a>
+              </div>
+            </div>
+          </section>
+
+          {/* Footer */}
+          <footer>
+            <div className="footer-content">
+              <div className="footer-logo">
+                <span style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent-2))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>d1</span>fay
+              </div>
+              <div className="footer-links">
+                <a href="#works" onClick={(e) => { e.preventDefault(); handleNavClick('works'); }}>{t.navWorks}</a>
+                <a href="#skills" onClick={(e) => { e.preventDefault(); handleNavClick('skills'); }}>{t.navSkills}</a>
+                <a href="#contact" onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>{t.navContact}</a>
+              </div>
+              <p className="footer-copy">&copy; 2022 — 2026 d1fay. All rights reserved.</p>
+            </div>
+          </footer>
+        </div>
       </div>
     </>
   );
