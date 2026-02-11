@@ -40,6 +40,49 @@ const skills = [
 
 const marqueeItems = ['Luau Scripting', 'Game Systems', 'Physics', 'UI/UX Design', 'Optimization', 'Architecture', 'Data Systems', 'Multiplayer'];
 
+// ─── Scroll Indicator Styles ────────────────────────────────────────
+const scrollIndicatorStyles: React.CSSProperties = {
+  position: 'absolute',
+  bottom: 'clamp(20px, 5vh, 40px)',
+  left: '50%',
+  transform: 'translateX(-50%)',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: 'clamp(8px, 1.5vw, 12px)',
+  animation: 'bounce 2s infinite',
+  zIndex: 10,
+};
+
+const mouseStyles: React.CSSProperties = {
+  width: 'clamp(20px, 3vw, 26px)',
+  height: 'clamp(32px, 5vw, 42px)',
+  border: '2px solid rgba(255, 255, 255, 0.3)',
+  borderRadius: '20px',
+  position: 'relative',
+  display: 'flex',
+  justifyContent: 'center',
+  paddingTop: '8px',
+  boxSizing: 'border-box',
+};
+
+const mouseWheelStyles: React.CSSProperties = {
+  width: 'clamp(3px, 0.5vw, 4px)',
+  height: 'clamp(6px, 1vw, 8px)',
+  background: 'rgba(255, 255, 255, 0.5)',
+  borderRadius: '4px',
+  animation: 'scroll 2s infinite',
+};
+
+const scrollTextStyles: React.CSSProperties = {
+  fontSize: 'clamp(10px, 1.5vw, 12px)',
+  color: 'rgba(255, 255, 255, 0.5)',
+  textTransform: 'uppercase',
+  letterSpacing: '2px',
+  fontWeight: 500,
+  whiteSpace: 'nowrap',
+};
+
 // ─── App ────────────────────────────────────────────────────────────
 export function App() {
   const [lang, setLang] = useState<Lang>(detectLanguage);
@@ -49,6 +92,8 @@ export function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [typingText, setTypingText] = useState('');
   const [playingVideos, setPlayingVideos] = useState<Set<string>>(new Set());
+  const [showScrollIndicator, setShowScrollIndicator] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 769);
   
   const cursorRef = useRef<HTMLDivElement>(null);
   const cursorDotRef = useRef<HTMLDivElement>(null);
@@ -57,7 +102,6 @@ export function App() {
   const scrollProgressRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
   const cursorPosRef = useRef({ x: 0, y: 0 });
-  const isMobileRef = useRef(window.innerWidth < 769);
   const isScrollingRef = useRef(false);
   const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -68,7 +112,16 @@ export function App() {
     localStorage.setItem('lang', newLang);
   }, []);
 
-  // Scroll progress + header scroll state + active section
+  // Handle resize for mobile detection
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 769);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Scroll progress + header scroll state + active section + scroll indicator visibility
   useEffect(() => {
     const onScroll = () => {
       const scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight);
@@ -76,6 +129,9 @@ export function App() {
         scrollProgressRef.current.style.transform = `scaleX(${Math.min(scrolled, 1)})`;
       }
       setScrolled(window.scrollY > 50);
+      
+      // Hide scroll indicator after scrolling past hero
+      setShowScrollIndicator(window.scrollY < 100);
 
       // Skip scroll-based active nav detection while programmatic scroll is in progress
       if (isScrollingRef.current) return;
@@ -101,7 +157,7 @@ export function App() {
 
   // Custom cursor
   useEffect(() => {
-    if (isMobileRef.current) return;
+    if (isMobile) return;
 
     const onMove = (e: MouseEvent) => {
       mouseRef.current = { x: e.clientX, y: e.clientY };
@@ -162,7 +218,7 @@ export function App() {
       cancelAnimationFrame(animId);
       observer.disconnect();
     };
-  }, []);
+  }, [isMobile]);
 
   // Particles
   useEffect(() => {
@@ -326,6 +382,27 @@ export function App() {
     return () => observer.disconnect();
   }, []);
 
+  // Inject keyframes for scroll indicator animations
+  useEffect(() => {
+    const styleId = 'scroll-indicator-keyframes';
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement('style');
+      style.id = styleId;
+      style.textContent = `
+        @keyframes bounce {
+          0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+          40% { transform: translateX(-50%) translateY(-10px); }
+          60% { transform: translateX(-50%) translateY(-5px); }
+        }
+        @keyframes scroll {
+          0% { opacity: 1; transform: translateY(0); }
+          100% { opacity: 0; transform: translateY(10px); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }, []);
+
   const handleVideoPlay = (videoId: string) => {
     setPlayingVideos(prev => new Set(prev).add(videoId));
   };
@@ -366,13 +443,17 @@ export function App() {
     }, 1000);
   };
 
+  const handleScrollIndicatorClick = () => {
+    handleNavClick('works');
+  };
+
   return (
     <>
       {/* Scroll Progress */}
       <div ref={scrollProgressRef} className="scroll-progress" />
 
       {/* Custom Cursor */}
-      {!isMobileRef.current && (
+      {!isMobile && (
         <>
           <div ref={cursorRef} className="cursor" />
           <div ref={cursorDotRef} className="cursor-dot" />
@@ -449,7 +530,7 @@ export function App() {
 
       {/* Hero */}
       <div className="container">
-        <section className="hero">
+        <section className="hero" style={{ position: 'relative' }}>
           <div className="hero-badge">
             <span>✨</span>
             <span>{t.availableBadge}</span>
@@ -476,9 +557,25 @@ export function App() {
             </a>
           </div>
 
-          <div className="scroll-indicator">
-            <div className="mouse" />
-            <span>{t.scrollDown}</span>
+          {/* Optimized Scroll Indicator */}
+          <div 
+            style={{
+              ...scrollIndicatorStyles,
+              opacity: showScrollIndicator ? 1 : 0,
+              visibility: showScrollIndicator ? 'visible' : 'hidden',
+              transition: 'opacity 0.3s ease, visibility 0.3s ease',
+              cursor: 'pointer',
+            }}
+            onClick={handleScrollIndicatorClick}
+            role="button"
+            tabIndex={0}
+            aria-label={t.scrollDown}
+            onKeyDown={(e) => e.key === 'Enter' && handleScrollIndicatorClick()}
+          >
+            <div style={mouseStyles}>
+              <div style={mouseWheelStyles} />
+            </div>
+            <span style={scrollTextStyles}>{t.scrollDown}</span>
           </div>
         </section>
       </div>
