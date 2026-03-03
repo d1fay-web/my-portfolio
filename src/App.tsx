@@ -654,7 +654,7 @@ export function App() {
             <div className="stats">
               {[
                 { icon: '🎮', count: 15000000, label: t.totalVisits },
-                { icon: '🚀', count: 10, label: t.projects },
+                { icon: '🚀', count: 15, label: t.projects },
                 { icon: '⭐', count: 4, label: t.yearsExp },
                 { icon: '🤝', count: 25, label: t.clients },
               ].map((stat, i) => (
