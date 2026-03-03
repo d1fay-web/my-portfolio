@@ -23,7 +23,7 @@ const games = [
   { img: 'https://tr.rbxcdn.com/180DAY-500a7c97f4a5c2d7c7b59ecb2c0dabbd/768/432/Image/Webp/noFilter', title: 'My Fishing Soccer Players', descKey: 'fishingSoccerDesc' as const, tags: ['Simulator'], best: true, url: 'https://www.roblox.com/games/127188114308677' },
   { img: 'https://tr.rbxcdn.com/180DAY-8985f786acc77af90543b3eb67b9c1e2/768/432/Image/Webp/noFilter', title: 'Super Teamwork', descKey: 'superTeamworkDesc' as const, tags: ['Obby'], best: false, url: 'https://www.roblox.com/games/15897181617' },
   { img: 'https://tr.rbxcdn.com/180DAY-cc41fe010df669792fac2f5548929291/768/432/Image/Webp/noFilter', title: 'Repair a Boat', descKey: 'repairBoatDesc' as const, tags: ['Tycoon'], best: false, url: 'https://www.roblox.com/games/89644913551316' },
-   { img: 'https://tr.rbxcdn.com/180DAY-2d8058443667a3c00dd664d5397661b6/768/432/Image/Webp/noFilter', title: '[🏅] You VS Peter Ultimate', descKey: 'YouVsPeterUltimateDesc' as const, tags: ['Survival'], best: false, url: 'https://www.roblox.com/games/125127715503578' },
+   { img: 'https://tr.rbxcdn.com/180DAY-2d8058443667a3c00dd664d5397661b6/768/432/Image/Webp/noFilter', title: '[🏅] You VS Peter Ultimate', descKey: 'youVsPeterUltimateDesc' as const, tags: ['Survival'], best: true, url: 'https://www.roblox.com/games/125127715503578' },
 ];
 
 const skills = [
