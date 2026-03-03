@@ -49,13 +49,11 @@ export const translations = {
 
     play: 'Играть',
 
-    // Video descriptions
     avatarDesc: 'Система полной кастомизации персонажа с сохранением данных.',
     physicsDesc: 'Продвинутая физика скольжения и механика инерции.',
     movementDesc: 'Система передвижения: бег, приседание и стамина.',
     carDealerDesc: 'Интерфейс автосалона и спавн транспорта.',
 
-    // Game descriptions — простые и понятные
     innocentDesc: 'Хоррор-игра где нужно выживать в тёмных локациях, решая загадки и убегая от опасностей.',
     russia90sDesc: 'Ролеплей в атмосфере России 90-х: бизнес, машины, общение и полная свобода действий.',
     school102Desc: 'Школьный ролеплей с уроками, переменами и множеством активностей для учеников.',
@@ -73,7 +71,6 @@ export const translations = {
     repairBoatDesc: 'Чини и улучшай свою лодку, добавляя новые детали и открывая острова.',
     youVsPeterUltimateDesc: 'Играй за Питера и лови Брайанов, или прячься за Брайана и выживай.',
 
-    // Testimonials
     testimonial1: '"Отличный разработчик! Сделал всё быстро и качественно. Рекомендую всем кто ищет надёжного скриптера."',
     testimonial2: '"Работаем уже пол года. Очень профессиональный подход к работе. Всегда на связи и готов помочь."',
     testimonial3: '"Лучший скриптер с которым я работал. Код чистый и оптимизированный. 10 из 10!"',
@@ -114,13 +111,11 @@ export const translations = {
 
     play: 'Play',
 
-    // Video descriptions
     avatarDesc: 'Full character customization system with data saving.',
     physicsDesc: 'Advanced sliding physics and inertia mechanics.',
     movementDesc: 'Movement system: running, crouching and stamina.',
     carDealerDesc: 'Vehicle shop UI and spawning system.',
 
-    // Game descriptions — simple and clear
     innocentDesc: 'Horror game where you survive in dark locations, solving puzzles and escaping dangers.',
     russia90sDesc: 'Roleplay set in 1990s Russia: business, cars, socializing and total freedom.',
     school102Desc: 'School roleplay with classes, breaks and lots of activities for students.',
@@ -138,7 +133,6 @@ export const translations = {
     repairBoatDesc: 'Fix and upgrade your boat, adding new parts and discovering islands.',
     youVsPeterUltimateDesc: 'Play as Peter and hunt Brians, or hide as Brian and survive.',
 
-    // Testimonials
     testimonial1: '"Great developer! Did everything quickly and with quality. Recommend to anyone looking for a reliable scripter."',
     testimonial2: '"We have been working together for half a year. Very professional approach to work. Always available and ready to help."',
     testimonial3: '"Best scripter I\'ve worked with. Code is clean and optimized. 10 out of 10!"',
