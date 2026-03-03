@@ -69,7 +69,8 @@ export const translations = {
     fishingSoccerDesc: 'Уникальный симулятор рыбалки с коллекционированием футболистов.',
     superTeamworkDesc: 'Кооперативный обби где нужно работать в команде для прохождения уровней.',
     repairBoatDesc: 'Тайкун где ты чинишь и улучшаешь свою лодку, открывая новые возможности.',
-    
+    youVsPeterUltimateDesc: 'Игра, где нужно выживать против Питера!',
+
     // Testimonials
     testimonial1: '"Отличный разработчик! Сделал всё быстро и качественно. Рекомендую всем кто ищет надёжного скриптера."',
     testimonial2: '"Работаем уже пол года. Очень профессиональный подход к работе. Всегда на связи и готов помочь."',
@@ -129,6 +130,7 @@ export const translations = {
     fishingSoccerDesc: 'Unique fishing simulator with soccer player collecting.',
     superTeamworkDesc: 'Cooperative obby where you need to work as a team to complete levels.',
     repairBoatDesc: 'Tycoon where you repair and upgrade your boat, unlocking new features.',
+    youVsPeterUltimateDesc: 'A game where you have to survive against Peter!',
     
     testimonial1: '"Great developer! Did everything quickly and with quality. Recommend to anyone looking for a reliable scripter."',
     testimonial2: '"We have been working together for half a year. Very professional approach to work. Always available and ready to help."',
