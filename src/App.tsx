@@ -1,17 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { detectLanguage, translations, type Lang } from './i18n';
 
-// ─── Types ───────────────────────────────────────────────────────────
-interface GameData {
-  universeId: string;
-  placeId: string;
-  title: string;
-  descKey: string;
-  tags: string[];
-  best: boolean;
-  img: string;
-}
-
 // ─── Data ────────────────────────────────────────────────────────────
 const videos = [
   { id: 'OcBM6O__mj0', title: 'Avatar Changer', descKey: 'avatarDesc' as const },
@@ -20,151 +9,23 @@ const videos = [
   { id: 'N8wPDDrN3bU', title: 'Car Dealership', descKey: 'carDealerDesc' as const },
 ];
 
-const games: GameData[] = [
-  {
-    universeId: '6489498590',
-    placeId: '116402140872647',
-    title: 'Innocent 🕯️ [HORROR]',
-    descKey: 'innocentDesc',
-    tags: ['Horror'],
-    best: false,
-    img: 'https://tr.rbxcdn.com/180DAY-8322bb63c1d110005383957610374193/768/432/Image/Png/noFilter',
-  },
-  {
-    universeId: '6283021498',
-    placeId: '111479551721846',
-    title: 'RUSSIA: THE WILD 90s RP',
-    descKey: 'russia90sDesc',
-    tags: ['Roleplay'],
-    best: false,
-    img: 'https://tr.rbxcdn.com/180DAY-bfd17a6e0b60793e7ec03131f02932e7/768/432/Image/Webp/noFilter',
-  },
-  {
-    universeId: '5390498498',
-    placeId: '73413968610508',
-    title: 'School 102 RP [Beta]',
-    descKey: 'school102Desc',
-    tags: ['Roleplay'],
-    best: true,
-    img: 'https://tr.rbxcdn.com/180DAY-75c68dfb1f0d52c3ab50a3e2cf42f0d3/768/432/Image/Webp/noFilter',
-  },
-  {
-    universeId: '5316282498',
-    placeId: '14765772149',
-    title: 'Russia Car Driving: Volgograd',
-    descKey: 'volgogradDesc',
-    tags: ['Roleplay'],
-    best: false,
-    img: 'https://tr.rbxcdn.com/180DAY-1f51541ab6b599965d392f630caf23b9/768/432/Image/Webp/noFilter',
-  },
-  {
-    universeId: '7101943222',
-    placeId: '139459072362596',
-    title: 'Elite Role-Playing Game',
-    descKey: 'eliteRPDesc',
-    tags: ['Roleplay'],
-    best: true,
-    img: 'https://tr.rbxcdn.com/180DAY-5e2d54f1d3d35d32d200cdfb20f6bd2e/768/432/Image/Webp/noFilter',
-  },
-  {
-    universeId: '6602124789',
-    placeId: '120805135975842',
-    title: 'Line to Enter 67',
-    descKey: 'line67Desc',
-    tags: ['Simulator'],
-    best: false,
-    img: 'https://tr.rbxcdn.com/180DAY-b50dc87e124df4ac8ca70ad5fd11cd96/768/432/Image/Webp/noFilter',
-  },
-  {
-    universeId: '6518902345',
-    placeId: '118098395632409',
-    title: 'Hype Heist',
-    descKey: 'hypeHeistDesc',
-    tags: ['Simulator'],
-    best: false,
-    img: 'https://tr.rbxcdn.com/180DAY-6196b537e773dc3226e39b9df34b8a25/768/432/Image/Webp/noFilter',
-  },
-  {
-    universeId: '6090127654',
-    placeId: '104040262451134',
-    title: 'Escape Tsunami For Celebs!',
-    descKey: 'tsunamiDesc',
-    tags: ['Simulator'],
-    best: true,
-    img: 'https://tr.rbxcdn.com/180DAY-68bc3df009011f9ff85b4080bbcc6205/768/432/Image/Webp/noFilter',
-  },
-  {
-    universeId: '5988234567',
-    placeId: '100727356607350',
-    title: 'Steal Lucky Block From Brainrots',
-    descKey: 'luckyBrainrotDesc',
-    tags: ['Simulator'],
-    best: true,
-    img: 'https://tr.rbxcdn.com/180DAY-f91557d4217a511ec6d0027e4a9a0742/768/432/Image/Webp/noFilter',
-  },
-  {
-    universeId: '5787654321',
-    placeId: '94172167755120',
-    title: 'Break a Lucky Block for Cars!',
-    descKey: 'luckyCarsDesc',
-    tags: ['Simulator'],
-    best: true,
-    img: 'https://tr.rbxcdn.com/180DAY-93d18cfc68a973963decd5b3416c02dc/768/432/Image/Webp/noFilter',
-  },
-  {
-    universeId: '6801234567',
-    placeId: '127188114308677',
-    title: 'My Fishing Soccer Players',
-    descKey: 'fishingSoccerDesc',
-    tags: ['Simulator'],
-    best: false,
-    img: 'https://tr.rbxcdn.com/180DAY-500a7c97f4a5c2d7c7b59ecb2c0dabbd/768/432/Image/Webp/noFilter',
-  },
-  {
-    universeId: '5601234567',
-    placeId: '89107141752801',
-    title: '[🚀] Fly to Brainrot',
-    descKey: 'flyToBrainrotDesc',
-    tags: ['Simulator'],
-    best: true,
-    img: 'https://tr.rbxcdn.com/180DAY-ad1d1ae74780bd7b8f210da63bd961a3/768/432/Image/Webp/noFilter',
-  },
-  {
-    universeId: '6034567890',
-    placeId: '103136064565960',
-    title: 'Jump for Celebs',
-    descKey: 'jumpForCelebsDesc',
-    tags: ['Simulator'],
-    best: true,
-    img: 'https://tr.rbxcdn.com/180DAY-65237eb335e373dfa91147515d251b6a/768/432/Image/Webp/noFilter',
-  },
-  {
-    universeId: '5434567890',
-    placeId: '15897181617',
-    title: 'Super Teamwork',
-    descKey: 'superTeamworkDesc',
-    tags: ['Obby'],
-    best: true,
-    img: 'https://tr.rbxcdn.com/180DAY-8985f786acc77af90543b3eb67b9c1e2/768/432/Image/Webp/noFilter',
-  },
-  {
-    universeId: '5612345678',
-    placeId: '89644913551316',
-    title: 'Repair a Boat',
-    descKey: 'repairBoatDesc',
-    tags: ['Tycoon'],
-    best: false,
-    img: 'https://tr.rbxcdn.com/180DAY-cc41fe010df669792fac2f5548929291/768/432/Image/Webp/noFilter',
-  },
-  {
-    universeId: '6734567890',
-    placeId: '125127715503578',
-    title: '[🏅] You VS Peter Ultimate',
-    descKey: 'youVsPeterUltimateDesc',
-    tags: ['Survival'],
-    best: true,
-    img: 'https://tr.rbxcdn.com/180DAY-2d8058443667a3c00dd664d5397661b6/768/432/Image/Webp/noFilter',
-  },
+const games = [
+  { img: 'https://tr.rbxcdn.com/180DAY-8322bb63c1d110005383957610374193/768/432/Image/Png/noFilter', title: 'Innocent 🕯️ [HORROR]', descKey: 'innocentDesc' as const, tags: ['Horror'], best: false, placeId: '116402140872647' },
+  { img: 'https://tr.rbxcdn.com/180DAY-bfd17a6e0b60793e7ec03131f02932e7/768/432/Image/Webp/noFilter', title: 'RUSSIA: THE WILD 90s RP', descKey: 'russia90sDesc' as const, tags: ['Roleplay'], best: false, placeId: '111479551721846' },
+  { img: 'https://tr.rbxcdn.com/180DAY-75c68dfb1f0d52c3ab50a3e2cf42f0d3/768/432/Image/Webp/noFilter', title: 'School 102 RP [Beta]', descKey: 'school102Desc' as const, tags: ['Roleplay'], best: true, placeId: '73413968610508' },
+  { img: 'https://tr.rbxcdn.com/180DAY-1f51541ab6b599965d392f630caf23b9/768/432/Image/Webp/noFilter', title: 'Russia Car Driving: Volgograd', descKey: 'volgogradDesc' as const, tags: ['Roleplay'], best: false, placeId: '14765772149' },
+  { img: 'https://tr.rbxcdn.com/180DAY-5e2d54f1d3d35d32d200cdfb20f6bd2e/768/432/Image/Webp/noFilter', title: 'Elite Role-Playing Game', descKey: 'eliteRPDesc' as const, tags: ['Roleplay'], best: true, placeId: '139459072362596' },
+  { img: 'https://tr.rbxcdn.com/180DAY-b50dc87e124df4ac8ca70ad5fd11cd96/768/432/Image/Webp/noFilter', title: 'Line to Enter 67', descKey: 'line67Desc' as const, tags: ['Simulator'], best: false, placeId: '120805135975842' },
+  { img: 'https://tr.rbxcdn.com/180DAY-6196b537e773dc3226e39b9df34b8a25/768/432/Image/Webp/noFilter', title: 'Hype Heist', descKey: 'hypeHeistDesc' as const, tags: ['Simulator'], best: false, placeId: '118098395632409' },
+  { img: 'https://tr.rbxcdn.com/180DAY-68bc3df009011f9ff85b4080bbcc6205/768/432/Image/Webp/noFilter', title: 'Escape Tsunami For Celebs!', descKey: 'tsunamiDesc' as const, tags: ['Simulator'], best: true, placeId: '104040262451134' },
+  { img: 'https://tr.rbxcdn.com/180DAY-f91557d4217a511ec6d0027e4a9a0742/768/432/Image/Webp/noFilter', title: 'Steal Lucky Block From Brainrots', descKey: 'luckyBrainrotDesc' as const, tags: ['Simulator'], best: true, placeId: '100727356607350' },
+  { img: 'https://tr.rbxcdn.com/180DAY-93d18cfc68a973963decd5b3416c02dc/768/432/Image/Webp/noFilter', title: 'Break a Lucky Block for Cars!', descKey: 'luckyCarsDesc' as const, tags: ['Simulator'], best: true, placeId: '94172167755120' },
+  { img: 'https://tr.rbxcdn.com/180DAY-500a7c97f4a5c2d7c7b59ecb2c0dabbd/768/432/Image/Webp/noFilter', title: 'My Fishing Soccer Players', descKey: 'fishingSoccerDesc' as const, tags: ['Simulator'], best: false, placeId: '127188114308677' },
+  { img: 'https://tr.rbxcdn.com/180DAY-ad1d1ae74780bd7b8f210da63bd961a3/768/432/Image/Webp/noFilter', title: '[🚀] Fly to Brainrot', descKey: 'flyToBrainrotDesc' as const, tags: ['Simulator'], best: true, placeId: '89107141752801' },
+  { img: 'https://tr.rbxcdn.com/180DAY-65237eb335e373dfa91147515d251b6a/768/432/Image/Webp/noFilter', title: 'Jump for Celebs', descKey: 'jumpForCelebsDesc' as const, tags: ['Simulator'], best: true, placeId: '103136064565960' },
+  { img: 'https://tr.rbxcdn.com/180DAY-8985f786acc77af90543b3eb67b9c1e2/768/432/Image/Webp/noFilter', title: 'Super Teamwork', descKey: 'superTeamworkDesc' as const, tags: ['Obby'], best: true, placeId: '15897181617' },
+  { img: 'https://tr.rbxcdn.com/180DAY-cc41fe010df669792fac2f5548929291/768/432/Image/Webp/noFilter', title: 'Repair a Boat', descKey: 'repairBoatDesc' as const, tags: ['Tycoon'], best: false, placeId: '89644913551316' },
+  { img: 'https://tr.rbxcdn.com/180DAY-2d8058443667a3c00dd664d5397661b6/768/432/Image/Webp/noFilter', title: '[🏅] You VS Peter Ultimate', descKey: 'youVsPeterUltimateDesc' as const, tags: ['Survival'], best: true, placeId: '125127715503578' },
 ];
 
 const skills = [
@@ -182,34 +43,25 @@ const skills = [
 
 const marqueeItems = ['Luau Scripting', 'Game Systems', 'Physics', 'UI/UX Design', 'Optimization', 'Architecture', 'Data Systems', 'Multiplayer'];
 
-// ─── Placeholder for broken images ──────────────────────────────────
-const PLACEHOLDER_IMG = 'data:image/svg+xml;base64,' + btoa(`
-<svg xmlns="http://www.w3.org/2000/svg" width="768" height="432" viewBox="0 0 768 432">
-  <rect width="768" height="432" fill="#1a1a2e"/>
-  <text x="384" y="200" text-anchor="middle" fill="#4a4a6a" font-family="Arial" font-size="48">🎮</text>
-  <text x="384" y="260" text-anchor="middle" fill="#4a4a6a" font-family="Arial" font-size="18">Image loading...</text>
-</svg>`);
+// ─── Placeholder ─────────────────────────────────────────────────────
+const PLACEHOLDER_IMG = 'data:image/svg+xml,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="768" height="432"><rect width="768" height="432" fill="#1a1a2e"/><text x="384" y="216" text-anchor="middle" fill="#4a4a6a" font-size="48">🎮</text></svg>'
+);
 
-// ─── Image Component with Fallback ──────────────────────────────────
+// ─── GameImage ───────────────────────────────────────────────────────
 function GameImage({ src, alt }: { src: string; alt: string }) {
   const [imgSrc, setImgSrc] = useState(src);
-  const [loaded, setLoaded] = useState(false);
 
   return (
     <img
       src={imgSrc}
       alt={alt}
       onError={() => setImgSrc(PLACEHOLDER_IMG)}
-      onLoad={() => setLoaded(true)}
-      style={{
-        opacity: loaded ? 1 : 0,
-        transition: 'opacity 0.3s ease',
-      }}
     />
   );
 }
 
-// ─── Loading Screen Component ────────────────────────────────────────
+// ─── Loading Screen ──────────────────────────────────────────────────
 function LoadingScreen({ progress, isExiting }: { progress: number; isExiting: boolean }) {
   return (
     <div className={`loading-screen ${isExiting ? 'exit' : ''}`}>
@@ -228,7 +80,6 @@ function LoadingScreen({ progress, isExiting }: { progress: number; isExiting: b
           />
         ))}
       </div>
-
       <div className="loading-content">
         <div className="loading-logo">
           <span className="loading-logo-accent">d1</span>fay
@@ -236,10 +87,7 @@ function LoadingScreen({ progress, isExiting }: { progress: number; isExiting: b
         <div className="loading-subtitle">Roblox Developer</div>
         <div className="loading-progress-container">
           <div className="loading-progress-bar">
-            <div
-              className="loading-progress-fill"
-              style={{ width: `${progress}%` }}
-            />
+            <div className="loading-progress-fill" style={{ width: `${progress}%` }} />
           </div>
           <div className="loading-progress-text">{Math.round(progress)}%</div>
         </div>
@@ -250,7 +98,6 @@ function LoadingScreen({ progress, isExiting }: { progress: number; isExiting: b
           {progress >= 90 && 'Almost ready...'}
         </div>
       </div>
-
       <div className="loading-corner loading-corner-tl" />
       <div className="loading-corner loading-corner-tr" />
       <div className="loading-corner loading-corner-bl" />
@@ -259,7 +106,7 @@ function LoadingScreen({ progress, isExiting }: { progress: number; isExiting: b
   );
 }
 
-// ─── Scroll Indicator Styles ────────────────────────────────────────
+// ─── Styles ──────────────────────────────────────────────────────────
 const scrollIndicatorStyles: React.CSSProperties = {
   position: 'absolute',
   bottom: 'clamp(20px, 5vh, 40px)',
@@ -302,7 +149,7 @@ const scrollTextStyles: React.CSSProperties = {
   whiteSpace: 'nowrap',
 };
 
-// ─── App ────────────────────────────────────────────────────────────
+// ─── App ─────────────────────────────────────────────────────────────
 export function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
@@ -330,7 +177,7 @@ export function App() {
 
   const t = translations[lang];
 
-  // Loading screen effect
+  // Loading
   useEffect(() => {
     const duration = 2500;
     const interval = 30;
@@ -345,12 +192,9 @@ export function App() {
       if (currentStep >= steps) {
         clearInterval(timer);
         setLoadingProgress(100);
-
         setTimeout(() => {
           setIsExiting(true);
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 600);
+          setTimeout(() => setIsLoading(false), 600);
         }, 300);
       }
     }, interval);
@@ -363,21 +207,21 @@ export function App() {
     localStorage.setItem('lang', newLang);
   }, []);
 
+  // Resize
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 769);
-    };
+    const handleResize = () => setIsMobile(window.innerWidth < 769);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Scroll
   useEffect(() => {
     if (isLoading) return;
 
     const onScroll = () => {
-      const scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+      const s = window.scrollY / (document.body.scrollHeight - window.innerHeight);
       if (scrollProgressRef.current) {
-        scrollProgressRef.current.style.transform = `scaleX(${Math.min(scrolled, 1)})`;
+        scrollProgressRef.current.style.transform = `scaleX(${Math.min(s, 1)})`;
       }
       setScrolled(window.scrollY > 50);
       setShowScrollIndicator(window.scrollY < 100);
@@ -394,14 +238,13 @@ export function App() {
           break;
         }
       }
-      if (!found) {
-        setActiveNav('works');
-      }
+      if (!found) setActiveNav('works');
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, [isLoading]);
 
+  // Cursor
   useEffect(() => {
     if (isMobile || isLoading) return;
 
@@ -464,16 +307,16 @@ export function App() {
     };
   }, [isMobile, isLoading]);
 
+  // Particles
   useEffect(() => {
     if (isLoading) return;
-
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let w = canvas.width = window.innerWidth;
-    let h = canvas.height = window.innerHeight;
+    let w = (canvas.width = window.innerWidth);
+    let h = (canvas.height = window.innerHeight);
 
     const onResize = () => {
       w = canvas.width = window.innerWidth;
@@ -497,7 +340,7 @@ export function App() {
       const mx = mouseRef.current.x;
       const my = mouseRef.current.y;
 
-      particles.forEach(p => {
+      particles.forEach((p) => {
         const dx = mx - p.x;
         const dy = my - p.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -546,9 +389,9 @@ export function App() {
     };
   }, [isLoading]);
 
+  // Typing
   useEffect(() => {
     if (isLoading) return;
-
     const texts = t.typingTexts;
     let textIdx = 0;
     let charIdx = 0;
@@ -581,29 +424,27 @@ export function App() {
     return () => clearTimeout(timeout);
   }, [lang, t.typingTexts, isLoading]);
 
+  // Reveal
   useEffect(() => {
     if (isLoading) return;
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
+          if (entry.isIntersecting) entry.target.classList.add('visible');
         });
       },
       { threshold: 0.1 }
     );
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, [activeTab, isLoading]);
 
+  // Counter
   useEffect(() => {
     if (isLoading) return;
-
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach(entry => {
+        entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const el = entry.target as HTMLElement;
             const target = parseInt(el.dataset.count || '0');
@@ -626,10 +467,11 @@ export function App() {
       },
       { threshold: 0.5 }
     );
-    document.querySelectorAll('.stat-value[data-count]').forEach(el => observer.observe(el));
+    document.querySelectorAll('.stat-value[data-count]').forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, [isLoading]);
 
+  // Keyframes
   useEffect(() => {
     const styleId = 'scroll-indicator-keyframes';
     if (!document.getElementById(styleId)) {
@@ -651,7 +493,7 @@ export function App() {
   }, []);
 
   const handleVideoPlay = (videoId: string) => {
-    setPlayingVideos(prev => new Set(prev).add(videoId));
+    setPlayingVideos((prev) => new Set(prev).add(videoId));
   };
 
   const handleLogoClick = () => {
@@ -661,24 +503,16 @@ export function App() {
 
   const handleNavClick = (id: string) => {
     setMobileMenuOpen(false);
-
     isScrollingRef.current = true;
     setActiveNav(id);
 
-    if (scrollTimerRef.current) {
-      clearTimeout(scrollTimerRef.current);
-    }
+    if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current);
 
     const target = document.getElementById(id);
     if (target) {
       const headerOffset = 100;
       const elementPosition = target.getBoundingClientRect().top + window.scrollY;
-      const offsetPosition = elementPosition - headerOffset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth',
-      });
+      window.scrollTo({ top: elementPosition - headerOffset, behavior: 'smooth' });
     }
 
     scrollTimerRef.current = setTimeout(() => {
@@ -686,9 +520,7 @@ export function App() {
     }, 1000);
   };
 
-  const handleScrollIndicatorClick = () => {
-    handleNavClick('works');
-  };
+  const handleScrollIndicatorClick = () => handleNavClick('works');
 
   if (isLoading) {
     return <LoadingScreen progress={loadingProgress} isExiting={isExiting} />;
@@ -718,21 +550,16 @@ export function App() {
       <canvas ref={canvasRef} id="particles-canvas" />
 
       <div className="main-content-enter">
+        {/* Header */}
         <header className={scrolled ? 'scrolled' : ''}>
           <div className="logo" onClick={handleLogoClick} role="button" tabIndex={0}>
             <span className="logo-accent">d1</span>fay
           </div>
 
           <nav className="nav-links">
-            <a href="#works" className={`nav-link ${activeNav === 'works' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('works'); }}>
-              {t.navWorks}
-            </a>
-            <a href="#skills" className={`nav-link ${activeNav === 'skills' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('skills'); }}>
-              {t.navSkills}
-            </a>
-            <a href="#contact" className={`nav-link ${activeNav === 'contact' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>
-              {t.navContact}
-            </a>
+            <a href="#works" className={`nav-link ${activeNav === 'works' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('works'); }}>{t.navWorks}</a>
+            <a href="#skills" className={`nav-link ${activeNav === 'skills' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('skills'); }}>{t.navSkills}</a>
+            <a href="#contact" className={`nav-link ${activeNav === 'contact' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>{t.navContact}</a>
           </nav>
 
           <div className="nav-right">
@@ -743,34 +570,23 @@ export function App() {
             <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 {mobileMenuOpen ? (
-                  <>
-                    <line x1="18" y1="6" x2="6" y2="18" />
-                    <line x1="6" y1="6" x2="18" y2="18" />
-                  </>
+                  <><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></>
                 ) : (
-                  <>
-                    <line x1="3" y1="6" x2="21" y2="6" />
-                    <line x1="3" y1="12" x2="21" y2="12" />
-                    <line x1="3" y1="18" x2="21" y2="18" />
-                  </>
+                  <><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></>
                 )}
               </svg>
             </button>
           </div>
         </header>
 
+        {/* Mobile Nav */}
         <div className={`mobile-nav ${mobileMenuOpen ? 'open' : ''}`}>
-          <a href="#works" className={`nav-link ${activeNav === 'works' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('works'); }}>
-            {t.navWorks}
-          </a>
-          <a href="#skills" className={`nav-link ${activeNav === 'skills' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('skills'); }}>
-            {t.navSkills}
-          </a>
-          <a href="#contact" className={`nav-link ${activeNav === 'contact' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>
-            {t.navContact}
-          </a>
+          <a href="#works" className={`nav-link ${activeNav === 'works' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('works'); }}>{t.navWorks}</a>
+          <a href="#skills" className={`nav-link ${activeNav === 'skills' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('skills'); }}>{t.navSkills}</a>
+          <a href="#contact" className={`nav-link ${activeNav === 'contact' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>{t.navContact}</a>
         </div>
 
+        {/* Hero */}
         <div className="container">
           <section className="hero" style={{ position: 'relative' }}>
             <div className="hero-badge">
@@ -821,6 +637,7 @@ export function App() {
           </section>
         </div>
 
+        {/* Marquee */}
         <div className="marquee-section">
           <div className="marquee">
             {[...marqueeItems, ...marqueeItems].map((item, i) => (
@@ -832,6 +649,7 @@ export function App() {
         </div>
 
         <div className="container">
+          {/* Stats */}
           <section style={{ padding: '100px 0' }}>
             <div className="stats">
               {[
@@ -849,12 +667,10 @@ export function App() {
             </div>
           </section>
 
+          {/* Skills */}
           <section className="reveal" id="skills" style={{ padding: '80px 0' }}>
             <div className="section-header">
-              <div className="section-label">
-                <span>🛠️</span>
-                <span>{t.mySkills}</span>
-              </div>
+              <div className="section-label"><span>🛠️</span><span>{t.mySkills}</span></div>
               <h2 className="section-title">{t.techTools}</h2>
               <p className="section-desc">{t.skillsDesc}</p>
             </div>
@@ -871,23 +687,17 @@ export function App() {
             </div>
           </section>
 
+          {/* Works */}
           <section id="works" style={{ padding: '80px 0' }}>
             <div className="section-header">
-              <div className="section-label">
-                <span>💼</span>
-                <span>{t.portfolio}</span>
-              </div>
+              <div className="section-label"><span>💼</span><span>{t.portfolio}</span></div>
               <h2 className="section-title">{t.bestWorks}</h2>
             </div>
 
             <div className="tabs-container">
               <nav className="tabs">
-                <button className={`tab-btn ${activeTab === 'showcase' ? 'active' : ''}`} onClick={() => setActiveTab('showcase')}>
-                  {t.showcase}
-                </button>
-                <button className={`tab-btn ${activeTab === 'games' ? 'active' : ''}`} onClick={() => setActiveTab('games')}>
-                  {t.games}
-                </button>
+                <button className={`tab-btn ${activeTab === 'showcase' ? 'active' : ''}`} onClick={() => setActiveTab('showcase')}>{t.showcase}</button>
+                <button className={`tab-btn ${activeTab === 'games' ? 'active' : ''}`} onClick={() => setActiveTab('games')}>{t.games}</button>
               </nav>
             </div>
 
@@ -937,7 +747,7 @@ export function App() {
                     </div>
                     <div className="game-info">
                       <h3>{game.title}</h3>
-                      <p>{t[game.descKey as keyof typeof t]}</p>
+                      <p>{t[game.descKey]}</p>
                       <div className="game-footer">
                         <div className="tags-wrapper" />
                         <a href={`https://www.roblox.com/games/${game.placeId}`} target="_blank" rel="noopener noreferrer" className="btn-play">
@@ -951,12 +761,10 @@ export function App() {
             )}
           </section>
 
+          {/* Testimonials */}
           <section className="reveal" style={{ padding: '100px 0' }}>
             <div className="section-header">
-              <div className="section-label">
-                <span>💬</span>
-                <span>{t.testimonials}</span>
-              </div>
+              <div className="section-label"><span>💬</span><span>{t.testimonials}</span></div>
               <h2 className="section-title">{t.whatClientsSay}</h2>
             </div>
             <div className="testimonials-grid">
@@ -982,6 +790,7 @@ export function App() {
             </div>
           </section>
 
+          {/* Contact */}
           <section className="reveal" id="contact" style={{ padding: '100px 0' }}>
             <div className="contact-card">
               <h2 className="contact-title">{t.letsWork}</h2>
@@ -995,6 +804,7 @@ export function App() {
             </div>
           </section>
 
+          {/* Footer */}
           <footer>
             <div className="footer-content">
               <div className="footer-logo">
