@@ -1,6 +1,17 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { detectLanguage, translations, type Lang } from './i18n';
 
+// ─── Types ───────────────────────────────────────────────────────────
+interface GameData {
+  universeId: string;
+  placeId: string;
+  title: string;
+  descKey: string;
+  tags: string[];
+  best: boolean;
+  img: string;
+}
+
 // ─── Data ────────────────────────────────────────────────────────────
 const videos = [
   { id: 'OcBM6O__mj0', title: 'Avatar Changer', descKey: 'avatarDesc' as const },
@@ -9,23 +20,151 @@ const videos = [
   { id: 'N8wPDDrN3bU', title: 'Car Dealership', descKey: 'carDealerDesc' as const },
 ];
 
-const games = [
-  { img: 'https://tr.rbxcdn.com/180DAY-8322bb63c1d110005383957610374193/768/432/Image/Png/noFilter', title: 'Innocent 🕯️ [HORROR]', descKey: 'innocentDesc' as const, tags: ['Horror'], best: false, url: 'https://www.roblox.com/games/116402140872647' },
-  { img: 'https://tr.rbxcdn.com/180DAY-bfd17a6e0b60793e7ec03131f02932e7/768/432/Image/Webp/noFilter', title: 'RUSSIA: THE WILD 90s RP', descKey: 'russia90sDesc' as const, tags: ['Roleplay'], best: false, url: 'https://www.roblox.com/games/111479551721846' },
-  { img: 'https://tr.rbxcdn.com/180DAY-75c68dfb1f0d52c3ab50a3e2cf42f0d3/768/432/Image/Webp/noFilter', title: 'School 102 RP [Beta]', descKey: 'school102Desc' as const, tags: ['Roleplay'], best: true, url: 'https://www.roblox.com/games/73413968610508' },
-  { img: 'https://tr.rbxcdn.com/180DAY-1f51541ab6b599965d392f630caf23b9/768/432/Image/Webp/noFilter', title: 'Russia Car Driving: Volgograd', descKey: 'volgogradDesc' as const, tags: ['Roleplay'], best: false, url: 'https://www.roblox.com/games/14765772149' },
-  { img: 'https://tr.rbxcdn.com/180DAY-5e2d54f1d3d35d32d200cdfb20f6bd2e/768/432/Image/Webp/noFilter', title: 'Elite Role-Playing Game', descKey: 'eliteRPDesc' as const, tags: ['Roleplay'], best: true, url: 'https://www.roblox.com/games/139459072362596' },
-  { img: 'https://tr.rbxcdn.com/180DAY-b50dc87e124df4ac8ca70ad5fd11cd96/768/432/Image/Webp/noFilter', title: 'Line to Enter 67', descKey: 'line67Desc' as const, tags: ['Simulator'], best: false, url: 'https://www.roblox.com/games/120805135975842' },
-  { img: 'https://tr.rbxcdn.com/180DAY-6196b537e773dc3226e39b9df34b8a25/768/432/Image/Webp/noFilter', title: 'Hype Heist', descKey: 'hypeHeistDesc' as const, tags: ['Simulator'], best: false, url: 'https://www.roblox.com/games/118098395632409' },
-  { img: 'https://tr.rbxcdn.com/180DAY-68bc3df009011f9ff85b4080bbcc6205/768/432/Image/Webp/noFilter', title: 'Escape Tsunami For Celebs!', descKey: 'tsunamiDesc' as const, tags: ['Simulator'], best: true, url: 'https://www.roblox.com/games/104040262451134' },
-  { img: 'https://tr.rbxcdn.com/180DAY-f91557d4217a511ec6d0027e4a9a0742/768/432/Image/Webp/noFilter', title: 'Steal Lucky Block From Brainrots', descKey: 'luckyBrainrotDesc' as const, tags: ['Simulator'], best: true, url: 'https://www.roblox.com/games/100727356607350' },
-  { img: 'https://tr.rbxcdn.com/180DAY-93d18cfc68a973963decd5b3416c02dc/768/432/Image/Webp/noFilter', title: 'Break a Lucky Block for Cars!', descKey: 'luckyCarsDesc' as const, tags: ['Simulator'], best: true, url: 'https://www.roblox.com/games/94172167755120' },
-  { img: 'https://tr.rbxcdn.com/180DAY-500a7c97f4a5c2d7c7b59ecb2c0dabbd/768/432/Image/Webp/noFilter', title: 'My Fishing Soccer Players', descKey: 'fishingSoccerDesc' as const, tags: ['Simulator'], best: false, url: 'https://www.roblox.com/games/127188114308677' },
-  { img: 'https://tr.rbxcdn.com/180DAY-ad1d1ae74780bd7b8f210da63bd961a3/768/432/Image/Webp/noFilter', title: '[🚀] Fly to Brainrot', descKey: 'flyToBrainrotDesc' as const, tags: ['Simulator'], best: true, url: 'https://www.roblox.com/games/89107141752801' },
-  { img: 'https://tr.rbxcdn.com/180DAY-65237eb335e373dfa91147515d251b6a/768/432/Image/Webp/noFilter', title: 'Jump for Celebs', descKey: 'jumpForCelebsDesc' as const, tags: ['Simulator'], best: true, url: 'https://www.roblox.com/games/103136064565960' },
-  { img: 'https://tr.rbxcdn.com/180DAY-8985f786acc77af90543b3eb67b9c1e2/768/432/Image/Webp/noFilter', title: 'Super Teamwork', descKey: 'superTeamworkDesc' as const, tags: ['Obby'], best: true, url: 'https://www.roblox.com/games/15897181617' },
-  { img: 'https://tr.rbxcdn.com/180DAY-cc41fe010df669792fac2f5548929291/768/432/Image/Webp/noFilter', title: 'Repair a Boat', descKey: 'repairBoatDesc' as const, tags: ['Tycoon'], best: false, url: 'https://www.roblox.com/games/89644913551316' },
-  { img: 'https://tr.rbxcdn.com/180DAY-2d8058443667a3c00dd664d5397661b6/768/432/Image/Webp/noFilter', title: '[🏅] You VS Peter Ultimate', descKey: 'youVsPeterUltimateDesc' as const, tags: ['Survival'], best: true, url: 'https://www.roblox.com/games/125127715503578' },
+const games: GameData[] = [
+  {
+    universeId: '6489498590',
+    placeId: '116402140872647',
+    title: 'Innocent 🕯️ [HORROR]',
+    descKey: 'innocentDesc',
+    tags: ['Horror'],
+    best: false,
+    img: 'https://tr.rbxcdn.com/180DAY-8322bb63c1d110005383957610374193/768/432/Image/Png/noFilter',
+  },
+  {
+    universeId: '6283021498',
+    placeId: '111479551721846',
+    title: 'RUSSIA: THE WILD 90s RP',
+    descKey: 'russia90sDesc',
+    tags: ['Roleplay'],
+    best: false,
+    img: 'https://tr.rbxcdn.com/180DAY-bfd17a6e0b60793e7ec03131f02932e7/768/432/Image/Webp/noFilter',
+  },
+  {
+    universeId: '5390498498',
+    placeId: '73413968610508',
+    title: 'School 102 RP [Beta]',
+    descKey: 'school102Desc',
+    tags: ['Roleplay'],
+    best: true,
+    img: 'https://tr.rbxcdn.com/180DAY-75c68dfb1f0d52c3ab50a3e2cf42f0d3/768/432/Image/Webp/noFilter',
+  },
+  {
+    universeId: '5316282498',
+    placeId: '14765772149',
+    title: 'Russia Car Driving: Volgograd',
+    descKey: 'volgogradDesc',
+    tags: ['Roleplay'],
+    best: false,
+    img: 'https://tr.rbxcdn.com/180DAY-1f51541ab6b599965d392f630caf23b9/768/432/Image/Webp/noFilter',
+  },
+  {
+    universeId: '7101943222',
+    placeId: '139459072362596',
+    title: 'Elite Role-Playing Game',
+    descKey: 'eliteRPDesc',
+    tags: ['Roleplay'],
+    best: true,
+    img: 'https://tr.rbxcdn.com/180DAY-5e2d54f1d3d35d32d200cdfb20f6bd2e/768/432/Image/Webp/noFilter',
+  },
+  {
+    universeId: '6602124789',
+    placeId: '120805135975842',
+    title: 'Line to Enter 67',
+    descKey: 'line67Desc',
+    tags: ['Simulator'],
+    best: false,
+    img: 'https://tr.rbxcdn.com/180DAY-b50dc87e124df4ac8ca70ad5fd11cd96/768/432/Image/Webp/noFilter',
+  },
+  {
+    universeId: '6518902345',
+    placeId: '118098395632409',
+    title: 'Hype Heist',
+    descKey: 'hypeHeistDesc',
+    tags: ['Simulator'],
+    best: false,
+    img: 'https://tr.rbxcdn.com/180DAY-6196b537e773dc3226e39b9df34b8a25/768/432/Image/Webp/noFilter',
+  },
+  {
+    universeId: '6090127654',
+    placeId: '104040262451134',
+    title: 'Escape Tsunami For Celebs!',
+    descKey: 'tsunamiDesc',
+    tags: ['Simulator'],
+    best: true,
+    img: 'https://tr.rbxcdn.com/180DAY-68bc3df009011f9ff85b4080bbcc6205/768/432/Image/Webp/noFilter',
+  },
+  {
+    universeId: '5988234567',
+    placeId: '100727356607350',
+    title: 'Steal Lucky Block From Brainrots',
+    descKey: 'luckyBrainrotDesc',
+    tags: ['Simulator'],
+    best: true,
+    img: 'https://tr.rbxcdn.com/180DAY-f91557d4217a511ec6d0027e4a9a0742/768/432/Image/Webp/noFilter',
+  },
+  {
+    universeId: '5787654321',
+    placeId: '94172167755120',
+    title: 'Break a Lucky Block for Cars!',
+    descKey: 'luckyCarsDesc',
+    tags: ['Simulator'],
+    best: true,
+    img: 'https://tr.rbxcdn.com/180DAY-93d18cfc68a973963decd5b3416c02dc/768/432/Image/Webp/noFilter',
+  },
+  {
+    universeId: '6801234567',
+    placeId: '127188114308677',
+    title: 'My Fishing Soccer Players',
+    descKey: 'fishingSoccerDesc',
+    tags: ['Simulator'],
+    best: false,
+    img: 'https://tr.rbxcdn.com/180DAY-500a7c97f4a5c2d7c7b59ecb2c0dabbd/768/432/Image/Webp/noFilter',
+  },
+  {
+    universeId: '5601234567',
+    placeId: '89107141752801',
+    title: '[🚀] Fly to Brainrot',
+    descKey: 'flyToBrainrotDesc',
+    tags: ['Simulator'],
+    best: true,
+    img: 'https://tr.rbxcdn.com/180DAY-ad1d1ae74780bd7b8f210da63bd961a3/768/432/Image/Webp/noFilter',
+  },
+  {
+    universeId: '6034567890',
+    placeId: '103136064565960',
+    title: 'Jump for Celebs',
+    descKey: 'jumpForCelebsDesc',
+    tags: ['Simulator'],
+    best: true,
+    img: 'https://tr.rbxcdn.com/180DAY-65237eb335e373dfa91147515d251b6a/768/432/Image/Webp/noFilter',
+  },
+  {
+    universeId: '5434567890',
+    placeId: '15897181617',
+    title: 'Super Teamwork',
+    descKey: 'superTeamworkDesc',
+    tags: ['Obby'],
+    best: true,
+    img: 'https://tr.rbxcdn.com/180DAY-8985f786acc77af90543b3eb67b9c1e2/768/432/Image/Webp/noFilter',
+  },
+  {
+    universeId: '5612345678',
+    placeId: '89644913551316',
+    title: 'Repair a Boat',
+    descKey: 'repairBoatDesc',
+    tags: ['Tycoon'],
+    best: false,
+    img: 'https://tr.rbxcdn.com/180DAY-cc41fe010df669792fac2f5548929291/768/432/Image/Webp/noFilter',
+  },
+  {
+    universeId: '6734567890',
+    placeId: '125127715503578',
+    title: '[🏅] You VS Peter Ultimate',
+    descKey: 'youVsPeterUltimateDesc',
+    tags: ['Survival'],
+    best: true,
+    img: 'https://tr.rbxcdn.com/180DAY-2d8058443667a3c00dd664d5397661b6/768/432/Image/Webp/noFilter',
+  },
 ];
 
 const skills = [
@@ -43,16 +182,42 @@ const skills = [
 
 const marqueeItems = ['Luau Scripting', 'Game Systems', 'Physics', 'UI/UX Design', 'Optimization', 'Architecture', 'Data Systems', 'Multiplayer'];
 
+// ─── Placeholder for broken images ──────────────────────────────────
+const PLACEHOLDER_IMG = 'data:image/svg+xml;base64,' + btoa(`
+<svg xmlns="http://www.w3.org/2000/svg" width="768" height="432" viewBox="0 0 768 432">
+  <rect width="768" height="432" fill="#1a1a2e"/>
+  <text x="384" y="200" text-anchor="middle" fill="#4a4a6a" font-family="Arial" font-size="48">🎮</text>
+  <text x="384" y="260" text-anchor="middle" fill="#4a4a6a" font-family="Arial" font-size="18">Image loading...</text>
+</svg>`);
+
+// ─── Image Component with Fallback ──────────────────────────────────
+function GameImage({ src, alt }: { src: string; alt: string }) {
+  const [imgSrc, setImgSrc] = useState(src);
+  const [loaded, setLoaded] = useState(false);
+
+  return (
+    <img
+      src={imgSrc}
+      alt={alt}
+      onError={() => setImgSrc(PLACEHOLDER_IMG)}
+      onLoad={() => setLoaded(true)}
+      style={{
+        opacity: loaded ? 1 : 0,
+        transition: 'opacity 0.3s ease',
+      }}
+    />
+  );
+}
+
 // ─── Loading Screen Component ────────────────────────────────────────
 function LoadingScreen({ progress, isExiting }: { progress: number; isExiting: boolean }) {
   return (
     <div className={`loading-screen ${isExiting ? 'exit' : ''}`}>
-      {/* Background effects */}
       <div className="loading-bg-gradient" />
       <div className="loading-particles">
         {Array.from({ length: 20 }).map((_, i) => (
-          <div 
-            key={i} 
+          <div
+            key={i}
             className="loading-particle"
             style={{
               left: `${Math.random() * 100}%`,
@@ -63,28 +228,21 @@ function LoadingScreen({ progress, isExiting }: { progress: number; isExiting: b
           />
         ))}
       </div>
-      
-      {/* Logo */}
+
       <div className="loading-content">
         <div className="loading-logo">
           <span className="loading-logo-accent">d1</span>fay
         </div>
-        
-        {/* Subtitle */}
         <div className="loading-subtitle">Roblox Developer</div>
-        
-        {/* Progress bar */}
         <div className="loading-progress-container">
           <div className="loading-progress-bar">
-            <div 
+            <div
               className="loading-progress-fill"
               style={{ width: `${progress}%` }}
             />
           </div>
           <div className="loading-progress-text">{Math.round(progress)}%</div>
         </div>
-        
-        {/* Loading status */}
         <div className="loading-status">
           {progress < 30 && 'Initializing...'}
           {progress >= 30 && progress < 60 && 'Loading assets...'}
@@ -92,8 +250,7 @@ function LoadingScreen({ progress, isExiting }: { progress: number; isExiting: b
           {progress >= 90 && 'Almost ready...'}
         </div>
       </div>
-      
-      {/* Corner decorations */}
+
       <div className="loading-corner loading-corner-tl" />
       <div className="loading-corner loading-corner-tr" />
       <div className="loading-corner loading-corner-bl" />
@@ -150,7 +307,7 @@ export function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [isExiting, setIsExiting] = useState(false);
-  
+
   const [lang, setLang] = useState<Lang>(detectLanguage);
   const [activeTab, setActiveTab] = useState<'showcase' | 'games'>('showcase');
   const [scrolled, setScrolled] = useState(false);
@@ -160,7 +317,7 @@ export function App() {
   const [playingVideos, setPlayingVideos] = useState<Set<string>>(new Set());
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 769);
-  
+
   const cursorRef = useRef<HTMLDivElement>(null);
   const cursorDotRef = useRef<HTMLDivElement>(null);
   const spotlightRef = useRef<HTMLDivElement>(null);
@@ -175,32 +332,29 @@ export function App() {
 
   // Loading screen effect
   useEffect(() => {
-    const duration = 2500; // Total loading time in ms
-    const interval = 30; // Update interval
+    const duration = 2500;
+    const interval = 30;
     const steps = duration / interval;
     let currentStep = 0;
-    
+
     const timer = setInterval(() => {
       currentStep++;
-      // Easing function for more natural progress
       const progress = Math.min(100, (currentStep / steps) * 100 * (1 + Math.random() * 0.1));
       setLoadingProgress(progress);
-      
+
       if (currentStep >= steps) {
         clearInterval(timer);
         setLoadingProgress(100);
-        
-        // Start exit animation
+
         setTimeout(() => {
           setIsExiting(true);
-          // Remove loading screen after exit animation
           setTimeout(() => {
             setIsLoading(false);
           }, 600);
         }, 300);
       }
     }, interval);
-    
+
     return () => clearInterval(timer);
   }, []);
 
@@ -209,7 +363,6 @@ export function App() {
     localStorage.setItem('lang', newLang);
   }, []);
 
-  // Handle resize for mobile detection
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 769);
@@ -218,24 +371,19 @@ export function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Scroll progress + header scroll state + active section + scroll indicator visibility
   useEffect(() => {
     if (isLoading) return;
-    
+
     const onScroll = () => {
       const scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight);
       if (scrollProgressRef.current) {
         scrollProgressRef.current.style.transform = `scaleX(${Math.min(scrolled, 1)})`;
       }
       setScrolled(window.scrollY > 50);
-      
-      // Hide scroll indicator after scrolling past hero
       setShowScrollIndicator(window.scrollY < 100);
 
-      // Skip scroll-based active nav detection while programmatic scroll is in progress
       if (isScrollingRef.current) return;
 
-      // Active nav
       const sections = ['contact', 'skills', 'works'];
       let found = false;
       for (const id of sections) {
@@ -254,7 +402,6 @@ export function App() {
     return () => window.removeEventListener('scroll', onScroll);
   }, [isLoading]);
 
-  // Custom cursor
   useEffect(() => {
     if (isMobile || isLoading) return;
 
@@ -285,7 +432,6 @@ export function App() {
     document.addEventListener('mousemove', onMove);
     animId = requestAnimationFrame(animate);
 
-    // Hover effects
     const addHover = () => cursorRef.current?.classList.add('hover');
     const removeHover = () => cursorRef.current?.classList.remove('hover');
     const addClick = () => cursorRef.current?.classList.add('clicking');
@@ -300,8 +446,7 @@ export function App() {
       });
     });
     observer.observe(document.body, { childList: true, subtree: true });
-    
-    // Initial bind
+
     document.querySelectorAll('a, button, .thumb, .game-card, .btn-play, .skill-card, .stat-card, .testimonial-card').forEach(el => {
       el.addEventListener('mouseenter', addHover);
       el.addEventListener('mouseleave', removeHover);
@@ -319,10 +464,9 @@ export function App() {
     };
   }, [isMobile, isLoading]);
 
-  // Particles
   useEffect(() => {
     if (isLoading) return;
-    
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -402,10 +546,9 @@ export function App() {
     };
   }, [isLoading]);
 
-  // Typing effect
   useEffect(() => {
     if (isLoading) return;
-    
+
     const texts = t.typingTexts;
     let textIdx = 0;
     let charIdx = 0;
@@ -433,15 +576,14 @@ export function App() {
       }
       timeout = setTimeout(tick, delay);
     };
-    
+
     timeout = setTimeout(tick, 500);
     return () => clearTimeout(timeout);
   }, [lang, t.typingTexts, isLoading]);
 
-  // Reveal on scroll
   useEffect(() => {
     if (isLoading) return;
-    
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -456,10 +598,9 @@ export function App() {
     return () => observer.disconnect();
   }, [activeTab, isLoading]);
 
-  // Counter animation
   useEffect(() => {
     if (isLoading) return;
-    
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(entry => {
@@ -489,7 +630,6 @@ export function App() {
     return () => observer.disconnect();
   }, [isLoading]);
 
-  // Inject keyframes for scroll indicator animations
   useEffect(() => {
     const styleId = 'scroll-indicator-keyframes';
     if (!document.getElementById(styleId)) {
@@ -521,30 +661,26 @@ export function App() {
 
   const handleNavClick = (id: string) => {
     setMobileMenuOpen(false);
-    
-    // Lock scroll-based detection immediately
+
     isScrollingRef.current = true;
     setActiveNav(id);
-    
-    // Clear any previous unlock timer
+
     if (scrollTimerRef.current) {
       clearTimeout(scrollTimerRef.current);
     }
-    
-    // Scroll to the target element
+
     const target = document.getElementById(id);
     if (target) {
       const headerOffset = 100;
       const elementPosition = target.getBoundingClientRect().top + window.scrollY;
       const offsetPosition = elementPosition - headerOffset;
-      
+
       window.scrollTo({
         top: offsetPosition,
         behavior: 'smooth',
       });
     }
-    
-    // Unlock scroll-based detection after scroll animation completes
+
     scrollTimerRef.current = setTimeout(() => {
       isScrollingRef.current = false;
     }, 1000);
@@ -554,17 +690,14 @@ export function App() {
     handleNavClick('works');
   };
 
-  // Show loading screen
   if (isLoading) {
     return <LoadingScreen progress={loadingProgress} isExiting={isExiting} />;
   }
 
   return (
     <>
-      {/* Scroll Progress */}
       <div ref={scrollProgressRef} className="scroll-progress" />
 
-      {/* Custom Cursor */}
       {!isMobile && (
         <>
           <div ref={cursorRef} className="cursor" />
@@ -573,7 +706,6 @@ export function App() {
         </>
       )}
 
-      {/* Background */}
       <div className="bg-gradient" />
       <div className="aurora" />
       <div className="noise" />
@@ -585,9 +717,7 @@ export function App() {
       </div>
       <canvas ref={canvasRef} id="particles-canvas" />
 
-      {/* Main content with entrance animation */}
       <div className="main-content-enter">
-        {/* Header */}
         <header className={scrolled ? 'scrolled' : ''}>
           <div className="logo" onClick={handleLogoClick} role="button" tabIndex={0}>
             <span className="logo-accent">d1</span>fay
@@ -629,7 +759,6 @@ export function App() {
           </div>
         </header>
 
-        {/* Mobile Nav */}
         <div className={`mobile-nav ${mobileMenuOpen ? 'open' : ''}`}>
           <a href="#works" className={`nav-link ${activeNav === 'works' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleNavClick('works'); }}>
             {t.navWorks}
@@ -642,7 +771,6 @@ export function App() {
           </a>
         </div>
 
-        {/* Hero */}
         <div className="container">
           <section className="hero" style={{ position: 'relative' }}>
             <div className="hero-badge">
@@ -671,8 +799,7 @@ export function App() {
               </a>
             </div>
 
-            {/* Optimized Scroll Indicator */}
-            <div 
+            <div
               style={{
                 ...scrollIndicatorStyles,
                 opacity: showScrollIndicator ? 1 : 0,
@@ -694,7 +821,6 @@ export function App() {
           </section>
         </div>
 
-        {/* Marquee */}
         <div className="marquee-section">
           <div className="marquee">
             {[...marqueeItems, ...marqueeItems].map((item, i) => (
@@ -706,7 +832,6 @@ export function App() {
         </div>
 
         <div className="container">
-          {/* Stats */}
           <section style={{ padding: '100px 0' }}>
             <div className="stats">
               {[
@@ -724,7 +849,6 @@ export function App() {
             </div>
           </section>
 
-          {/* Skills */}
           <section className="reveal" id="skills" style={{ padding: '80px 0' }}>
             <div className="section-header">
               <div className="section-label">
@@ -747,7 +871,6 @@ export function App() {
             </div>
           </section>
 
-          {/* Works */}
           <section id="works" style={{ padding: '80px 0' }}>
             <div className="section-header">
               <div className="section-label">
@@ -768,7 +891,6 @@ export function App() {
               </nav>
             </div>
 
-            {/* Showcase */}
             {activeTab === 'showcase' && (
               <div className="grid-videos" style={{ animation: 'fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)' }}>
                 {videos.map((v) => (
@@ -799,13 +921,12 @@ export function App() {
               </div>
             )}
 
-            {/* Games */}
             {activeTab === 'games' && (
               <div className="grid-games" style={{ animation: 'fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)' }}>
                 {games.map((game, i) => (
                   <div key={i} className="game-card reveal">
                     <div className="game-thumb">
-                      <img src={game.img} alt={game.title} />
+                      <GameImage src={game.img} alt={game.title} />
                       <div className="game-thumb-overlay" />
                       <div className="game-thumb-badge">
                         {game.best && <span className="g-tag proud">🔥 Best</span>}
@@ -816,10 +937,10 @@ export function App() {
                     </div>
                     <div className="game-info">
                       <h3>{game.title}</h3>
-                      <p>{t[game.descKey]}</p>
+                      <p>{t[game.descKey as keyof typeof t]}</p>
                       <div className="game-footer">
                         <div className="tags-wrapper" />
-                        <a href={game.url} target="_blank" rel="noopener noreferrer" className="btn-play">
+                        <a href={`https://www.roblox.com/games/${game.placeId}`} target="_blank" rel="noopener noreferrer" className="btn-play">
                           🎮 {t.play}
                         </a>
                       </div>
@@ -830,7 +951,6 @@ export function App() {
             )}
           </section>
 
-          {/* Testimonials */}
           <section className="reveal" style={{ padding: '100px 0' }}>
             <div className="section-header">
               <div className="section-label">
@@ -862,7 +982,6 @@ export function App() {
             </div>
           </section>
 
-          {/* Contact */}
           <section className="reveal" id="contact" style={{ padding: '100px 0' }}>
             <div className="contact-card">
               <h2 className="contact-title">{t.letsWork}</h2>
@@ -876,7 +995,6 @@ export function App() {
             </div>
           </section>
 
-          {/* Footer */}
           <footer>
             <div className="footer-content">
               <div className="footer-logo">
