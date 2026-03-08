@@ -3,10 +3,9 @@ import { detectLanguage, translations, type Lang } from './i18n';
 
 // ─── Data ────────────────────────────────────────────────────────────
 const videos = [
-  { id: 'OcBM6O__mj0', title: 'Avatar Changer', descKey: 'avatarDesc' as const },
-  { id: 'HNldXm4eRdA', title: 'Physics Slide', descKey: 'physicsDesc' as const },
-  { id: 'gFNwxx_Rvxo', title: 'Movement System', descKey: 'movementDesc' as const },
-  { id: 'N8wPDDrN3bU', title: 'Car Dealership', descKey: 'carDealerDesc' as const },
+  { id: 'a4FnyPoYjRU', title: 'View Model', descKey: 'viewmodelDesc' as const },
+  { id: 'slBh1VEZAFM', title: 'Procedural Generation', descKey: 'proceduralDesc' as const },
+  { id: '1WrnKt7JOyI', title: 'AI', descKey: 'AIDesc' as const },
 ];
 
 const games = [
