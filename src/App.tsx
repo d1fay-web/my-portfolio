@@ -6,6 +6,7 @@ const videos = [
   { id: 'a4FnyPoYjRU', title: 'View Model', descKey: 'viewmodelDesc' as const },
   { id: 'slBh1VEZAFM', title: 'Procedural Generation', descKey: 'proceduralDesc' as const },
   { id: '1WrnKt7JOyI', title: 'AI', descKey: 'AIDesc' as const },
+  { id: 'DN5dEcc9oFA', title: 'View Model V2', descKey: 'viewmodel2Desc' as const },
 ];
 
 const games = [
