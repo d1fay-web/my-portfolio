@@ -52,6 +52,7 @@ export const translations = {
     AIDesc: 'Продвинутый ИИ Монстра: реакция на звук и поиск игрока ',
     proceduralDesc: 'Процедурная генерация по чанкам (Майнкрафт)',
     viewmodelDesc: 'ViewModel: сетевая репликация и интерполяция',
+    viewmodel2Desc: 'ViewModel V2: Spring-физика без серверной нагрузки',
 
     innocentDesc: 'Хоррор-игра где нужно выживать в тёмных локациях, решая загадки и убегая от опасностей.',
     russia90sDesc: 'Ролеплей в атмосфере России 90-х: бизнес, машины, общение и полная свобода действий.',
@@ -113,6 +114,7 @@ export const translations = {
     AIDesc: 'Advanced Monster AI: Sound Reaction and Player Search ',
     proceduralDesc: 'Procedural generation by chunks (Minecraft)',
     viewmodelDesc: 'ViewModel: network replication and interpolation',
+    viewmodel2Desc: 'ViewModel V2: Spring physics without server load',
 
     innocentDesc: 'Horror game where you survive in dark locations, solving puzzles and escaping dangers.',
     russia90sDesc: 'Roleplay set in 1990s Russia: business, cars, socializing and total freedom.',
