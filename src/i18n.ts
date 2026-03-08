@@ -49,10 +49,9 @@ export const translations = {
 
     play: 'Играть',
 
-    avatarDesc: 'Система полной кастомизации персонажа с сохранением данных.',
-    physicsDesc: 'Продвинутая физика скольжения и механика инерции.',
-    movementDesc: 'Система передвижения: бег, приседание и стамина.',
-    carDealerDesc: 'Интерфейс автосалона и спавн транспорта.',
+    AIDesc: 'Продвинутый ИИ Монстра: реакция на звук и поиск игрока ',
+    proceduralDesc: 'Процедурная генерация по чанкам (Майнкрафт)',
+    viewmodelDesc: 'ViewModel: сетевая репликация и интерполяция',
 
     innocentDesc: 'Хоррор-игра где нужно выживать в тёмных локациях, решая загадки и убегая от опасностей.',
     russia90sDesc: 'Ролеплей в атмосфере России 90-х: бизнес, машины, общение и полная свобода действий.',
@@ -111,10 +110,9 @@ export const translations = {
 
     play: 'Play',
 
-    avatarDesc: 'Full character customization system with data saving.',
-    physicsDesc: 'Advanced sliding physics and inertia mechanics.',
-    movementDesc: 'Movement system: running, crouching and stamina.',
-    carDealerDesc: 'Vehicle shop UI and spawning system.',
+    AIDesc: 'Advanced Monster AI: Sound Reaction and Player Search ',
+    proceduralDesc: 'Procedural generation by chunks (Minecraft)',
+    viewmodelDesc: 'ViewModel: network replication and interpolation',
 
     innocentDesc: 'Horror game where you survive in dark locations, solving puzzles and escaping dangers.',
     russia90sDesc: 'Roleplay set in 1990s Russia: business, cars, socializing and total freedom.',
