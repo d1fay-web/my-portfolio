@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default defineConfig({
-  base: "/d1fay-web/",
+  base: "/my-portfolio/",
   
   plugins: [react(), tailwindcss()],
   
