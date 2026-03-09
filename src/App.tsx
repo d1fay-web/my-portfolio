@@ -22,7 +22,6 @@ const games = [
   { img: 'https://tr.rbxcdn.com/180DAY-93d18cfc68a973963decd5b3416c02dc/768/432/Image/Webp/noFilter', title: 'Break a Lucky Block for Cars!', descKey: 'luckyCarsDesc' as const, tags: ['Simulator'], best: true, placeId: '94172167755120' },
   { img: 'https://tr.rbxcdn.com/180DAY-500a7c97f4a5c2d7c7b59ecb2c0dabbd/768/432/Image/Webp/noFilter', title: 'My Fishing Soccer Players', descKey: 'fishingSoccerDesc' as const, tags: ['Simulator'], best: false, placeId: '127188114308677' },
   { img: 'https://tr.rbxcdn.com/180DAY-ad1d1ae74780bd7b8f210da63bd961a3/768/432/Image/Webp/noFilter', title: '[🚀] Fly to Brainrot', descKey: 'flyToBrainrotDesc' as const, tags: ['Simulator'], best: true, placeId: '89107141752801' },
-  { img: 'https://tr.rbxcdn.com/180DAY-9d1f6eb325ad69daeb88ee14c0448560/768/432/Image/Webp/noFilter', title: 'Swing Obby for Poppy Playtime 5!', descKey: 'obbyPoppyPlaytime5' as const, tags: ['Simulator'], best: true, placeId: '125553580825682' },
   { img: 'https://tr.rbxcdn.com/180DAY-65237eb335e373dfa91147515d251b6a/768/432/Image/Webp/noFilter', title: 'Jump for Celebs', descKey: 'jumpForCelebsDesc' as const, tags: ['Simulator'], best: true, placeId: '103136064565960' },
   { img: 'https://tr.rbxcdn.com/180DAY-8985f786acc77af90543b3eb67b9c1e2/768/432/Image/Webp/noFilter', title: 'Super Teamwork', descKey: 'superTeamworkDesc' as const, tags: ['Obby'], best: true, placeId: '15897181617' },
   { img: 'https://tr.rbxcdn.com/180DAY-cc41fe010df669792fac2f5548929291/768/432/Image/Webp/noFilter', title: 'Repair a Boat', descKey: 'repairBoatDesc' as const, tags: ['Tycoon'], best: false, placeId: '89644913551316' },
@@ -64,59 +63,19 @@ function GameImage({ src, alt }: { src: string; alt: string }) {
 
 // ─── Loading Screen ──────────────────────────────────────────────────
 function LoadingScreen({ progress, isExiting }: { progress: number; isExiting: boolean }) {
-  const [displayProgress, setDisplayProgress] = useState(0);
-  const animationRef = useRef<number>();
-
-  useEffect(() => {
-    const animate = () => {
-      setDisplayProgress(prev => {
-        const diff = progress - prev;
-        if (Math.abs(diff) < 0.1) return progress;
-        return prev + diff * 0.15;
-      });
-      animationRef.current = requestAnimationFrame(animate);
-    };
-
-    animationRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [progress]);
-
-  // Мемоизируем частицы чтобы они не пересоздавались
-  const particles = useRef(
-    Array.from({ length: 20 }, (_, i) => ({
-      id: i,
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      animationDelay: `${Math.random() * 2}s`,
-      animationDuration: `${3 + Math.random() * 2}s`,
-    }))
-  ).current;
-
-  const getStatusText = () => {
-    if (displayProgress < 30) return 'Initializing...';
-    if (displayProgress < 60) return 'Loading assets...';
-    if (displayProgress < 90) return 'Preparing experience...';
-    return 'Almost ready...';
-  };
-
   return (
     <div className={`loading-screen ${isExiting ? 'exit' : ''}`}>
       <div className="loading-bg-gradient" />
       <div className="loading-particles">
-        {particles.map((particle) => (
+        {Array.from({ length: 20 }).map((_, i) => (
           <div
-            key={particle.id}
+            key={i}
             className="loading-particle"
             style={{
-              left: particle.left,
-              top: particle.top,
-              animationDelay: particle.animationDelay,
-              animationDuration: particle.animationDuration,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 2}s`,
+              animationDuration: `${3 + Math.random() * 2}s`,
             }}
           />
         ))}
@@ -128,17 +87,15 @@ function LoadingScreen({ progress, isExiting }: { progress: number; isExiting: b
         <div className="loading-subtitle">Roblox Developer</div>
         <div className="loading-progress-container">
           <div className="loading-progress-bar">
-            <div 
-              className="loading-progress-fill" 
-              style={{ width: `${displayProgress}%` }} 
-            />
+            <div className="loading-progress-fill" style={{ width: `${progress}%` }} />
           </div>
-          <div className="loading-progress-text">
-            {Math.round(displayProgress)}%
-          </div>
+          <div className="loading-progress-text">{Math.round(progress)}%</div>
         </div>
         <div className="loading-status">
-          {getStatusText()}
+          {progress < 30 && 'Initializing...'}
+          {progress >= 30 && progress < 60 && 'Loading assets...'}
+          {progress >= 60 && progress < 90 && 'Preparing experience...'}
+          {progress >= 90 && 'Almost ready...'}
         </div>
       </div>
       <div className="loading-corner loading-corner-tl" />
@@ -220,35 +177,29 @@ export function App() {
 
   const t = translations[lang];
 
-  // Loading - плавная версия с requestAnimationFrame
+  // Loading
   useEffect(() => {
     const duration = 2500;
-    const startTime = performance.now();
-    let animationId: number;
+    const interval = 30;
+    const steps = duration / interval;
+    let currentStep = 0;
 
-    const easeOutQuad = (t: number) => t * (2 - t);
+    const timer = setInterval(() => {
+      currentStep++;
+      const progress = Math.min(100, (currentStep / steps) * 100 * (1 + Math.random() * 0.1));
+      setLoadingProgress(progress);
 
-    const animate = (currentTime: number) => {
-      const elapsed = currentTime - startTime;
-      const rawProgress = Math.min(elapsed / duration, 1);
-      const easedProgress = easeOutQuad(rawProgress) * 100;
-
-      setLoadingProgress(easedProgress);
-
-      if (rawProgress < 1) {
-        animationId = requestAnimationFrame(animate);
-      } else {
+      if (currentStep >= steps) {
+        clearInterval(timer);
         setLoadingProgress(100);
         setTimeout(() => {
           setIsExiting(true);
           setTimeout(() => setIsLoading(false), 600);
         }, 300);
       }
-    };
+    }, interval);
 
-    animationId = requestAnimationFrame(animate);
-
-    return () => cancelAnimationFrame(animationId);
+    return () => clearInterval(timer);
   }, []);
 
   const changeLang = useCallback((newLang: Lang) => {
