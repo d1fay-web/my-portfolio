@@ -70,6 +70,7 @@ export const translations = {
     superTeamworkDesc: 'Проходи обби вместе с друзьями — здесь нужна настоящая командная работа.',
     repairBoatDesc: 'Чини и улучшай свою лодку, добавляя новые детали и открывая острова.',
     youVsPeterUltimateDesc: 'Играй за Питера и лови Брайанов, или прячься за Брайана и выживай.',
+    obbyPoppyPlaytime5: 'Паркурь за персонажи из вселенной Poppy Playtime!',
 
     testimonial1: '"Отличный разработчик! Сделал всё быстро и качественно. Рекомендую всем кто ищет надёжного скриптера."',
     testimonial2: '"Работаем уже пол года. Очень профессиональный подход к работе. Всегда на связи и готов помочь."',
@@ -132,6 +133,7 @@ export const translations = {
     superTeamworkDesc: 'Complete obby stages with friends — real teamwork is required here.',
     repairBoatDesc: 'Fix and upgrade your boat, adding new parts and discovering islands.',
     youVsPeterUltimateDesc: 'Play as Peter and hunt Brians, or hide as Brian and survive.',
+    obbyPoppyPlaytime5: 'Parkour for characters from the Poppy Playtime universe!',
 
     testimonial1: '"Great developer! Did everything quickly and with quality. Recommend to anyone looking for a reliable scripter."',
     testimonial2: '"We have been working together for half a year. Very professional approach to work. Always available and ready to help."',
