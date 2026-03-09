@@ -114,7 +114,7 @@ function LoadingScreen({ progress, isExiting }: { progress: number; isExiting: b
     </div>
   );
 }
- 
+
 // ─── Styles ──────────────────────────────────────────────────────────
 const scrollIndicatorStyles: React.CSSProperties = {
   position: 'absolute',
@@ -186,38 +186,36 @@ export function App() {
 
   const t = translations[lang];
 
-// Loading
-useEffect(() => {
-  const duration = 2500;
-  const interval = 30;
-  const totalSteps = duration / interval;
-  let currentStep = 0;
-  let currentProgress = 0;
+  // Loading — плавный прогресс без скачков
+  useEffect(() => {
+    const duration = 2500;
+    const interval = 30;
+    const totalSteps = duration / interval;
+    let currentStep = 0;
+    let currentProgress = 0;
 
-  const timer = setInterval(() => {
-    currentStep++;
+    const timer = setInterval(() => {
+      currentStep++;
 
-    const linearProgress = currentStep / totalSteps;
-    
-    const easedProgress = 1 - Math.pow(1 - linearProgress, 3);
-    const targetProgress = easedProgress * 100;
+      const linearProgress = currentStep / totalSteps;
+      const easedProgress = 1 - Math.pow(1 - linearProgress, 3);
+      const targetProgress = easedProgress * 100;
 
-    currentProgress = Math.min(100, Math.max(currentProgress, targetProgress));
+      currentProgress = Math.min(100, Math.max(currentProgress, targetProgress));
+      setLoadingProgress(currentProgress);
 
-    setLoadingProgress(currentProgress);
+      if (currentStep >= totalSteps) {
+        clearInterval(timer);
+        setLoadingProgress(100);
+        setTimeout(() => {
+          setIsExiting(true);
+          setTimeout(() => setIsLoading(false), 600);
+        }, 300);
+      }
+    }, interval);
 
-    if (currentStep >= totalSteps) {
-      clearInterval(timer);
-      setLoadingProgress(100);
-      setTimeout(() => {
-        setIsExiting(true);
-        setTimeout(() => setIsLoading(false), 600);
-      }, 300);
-    }
-  }, interval);
-
-  return () => clearInterval(timer);
-}, []);
+    return () => clearInterval(timer);
+  }, []);
 
   const changeLang = useCallback((newLang: Lang) => {
     setLang(newLang);
