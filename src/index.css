@@ -1391,7 +1391,7 @@ footer {
 
 
 /* ═══════════════════════════════════════════════════════════════════
-   LOADING SCREEN STYLES
+   LOADING SCREEN STYLES - FIXED VERSION
    ═══════════════════════════════════════════════════════════════════ */
 
 .loading-screen {
@@ -1570,9 +1570,10 @@ footer {
   height: 100%;
   background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
   border-radius: 4px;
-  transition: width 0.1s ease;
   position: relative;
   box-shadow: 0 0 20px var(--glow);
+  /* Убираем transition - теперь анимация через JS */
+  will-change: width;
 }
 
 .loading-progress-fill::after {
@@ -1588,12 +1589,15 @@ footer {
   box-shadow: 0 0 20px var(--accent), 0 0 40px var(--glow);
 }
 
-/* Progress text */
+/* Progress text - FIXED для стабильной ширины */
 .loading-progress-text {
   font-family: 'JetBrains Mono', monospace;
   font-size: 14px;
   color: var(--accent);
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  min-width: 45px;
+  text-align: center;
 }
 
 /* Loading status */
@@ -1602,6 +1606,8 @@ footer {
   color: var(--text-secondary);
   animation: loadingFadeIn 1s 0.7s both;
   min-height: 20px;
+  min-width: 180px;
+  text-align: center;
 }
 
 /* Corner decorations */
@@ -1674,16 +1680,6 @@ footer {
   .loading-corner {
     width: 40px;
     height: 40px;
-  }
-  
-  .loading-corner-tl,
-  .loading-corner-tr,
-  .loading-corner-bl,
-  .loading-corner-br {
-    top: 20px;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
   }
   
   .loading-corner-tl { top: 20px; left: 20px; }
