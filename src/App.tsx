@@ -64,19 +64,59 @@ function GameImage({ src, alt }: { src: string; alt: string }) {
 
 // ─── Loading Screen ──────────────────────────────────────────────────
 function LoadingScreen({ progress, isExiting }: { progress: number; isExiting: boolean }) {
+  const [displayProgress, setDisplayProgress] = useState(0);
+  const animationRef = useRef<number>();
+
+  useEffect(() => {
+    const animate = () => {
+      setDisplayProgress(prev => {
+        const diff = progress - prev;
+        if (Math.abs(diff) < 0.1) return progress;
+        return prev + diff * 0.15;
+      });
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [progress]);
+
+  // Мемоизируем частицы чтобы они не пересоздавались
+  const particles = useRef(
+    Array.from({ length: 20 }, (_, i) => ({
+      id: i,
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      animationDelay: `${Math.random() * 2}s`,
+      animationDuration: `${3 + Math.random() * 2}s`,
+    }))
+  ).current;
+
+  const getStatusText = () => {
+    if (displayProgress < 30) return 'Initializing...';
+    if (displayProgress < 60) return 'Loading assets...';
+    if (displayProgress < 90) return 'Preparing experience...';
+    return 'Almost ready...';
+  };
+
   return (
     <div className={`loading-screen ${isExiting ? 'exit' : ''}`}>
       <div className="loading-bg-gradient" />
       <div className="loading-particles">
-        {Array.from({ length: 20 }).map((_, i) => (
+        {particles.map((particle) => (
           <div
-            key={i}
+            key={particle.id}
             className="loading-particle"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 2}s`,
-              animationDuration: `${3 + Math.random() * 2}s`,
+              left: particle.left,
+              top: particle.top,
+              animationDelay: particle.animationDelay,
+              animationDuration: particle.animationDuration,
             }}
           />
         ))}
@@ -88,15 +128,17 @@ function LoadingScreen({ progress, isExiting }: { progress: number; isExiting: b
         <div className="loading-subtitle">Roblox Developer</div>
         <div className="loading-progress-container">
           <div className="loading-progress-bar">
-            <div className="loading-progress-fill" style={{ width: `${progress}%` }} />
+            <div 
+              className="loading-progress-fill" 
+              style={{ width: `${displayProgress}%` }} 
+            />
           </div>
-          <div className="loading-progress-text">{Math.round(progress)}%</div>
+          <div className="loading-progress-text">
+            {Math.round(displayProgress)}%
+          </div>
         </div>
         <div className="loading-status">
-          {progress < 30 && 'Initializing...'}
-          {progress >= 30 && progress < 60 && 'Loading assets...'}
-          {progress >= 60 && progress < 90 && 'Preparing experience...'}
-          {progress >= 90 && 'Almost ready...'}
+          {getStatusText()}
         </div>
       </div>
       <div className="loading-corner loading-corner-tl" />
@@ -178,29 +220,35 @@ export function App() {
 
   const t = translations[lang];
 
-  // Loading
+  // Loading - плавная версия с requestAnimationFrame
   useEffect(() => {
     const duration = 2500;
-    const interval = 30;
-    const steps = duration / interval;
-    let currentStep = 0;
+    const startTime = performance.now();
+    let animationId: number;
 
-    const timer = setInterval(() => {
-      currentStep++;
-      const progress = Math.min(100, (currentStep / steps) * 100 * (1 + Math.random() * 0.1));
-      setLoadingProgress(progress);
+    const easeOutQuad = (t: number) => t * (2 - t);
 
-      if (currentStep >= steps) {
-        clearInterval(timer);
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const rawProgress = Math.min(elapsed / duration, 1);
+      const easedProgress = easeOutQuad(rawProgress) * 100;
+
+      setLoadingProgress(easedProgress);
+
+      if (rawProgress < 1) {
+        animationId = requestAnimationFrame(animate);
+      } else {
         setLoadingProgress(100);
         setTimeout(() => {
           setIsExiting(true);
           setTimeout(() => setIsLoading(false), 600);
         }, 300);
       }
-    }, interval);
+    };
 
-    return () => clearInterval(timer);
+    animationId = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(animationId);
   }, []);
 
   const changeLang = useCallback((newLang: Lang) => {
