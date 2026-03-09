@@ -10,7 +10,7 @@ const videos = [
 ];
 
 const games = [
-  { img: 'https://tr.rbxcdn.com/180DAY-8322bb63c1d110005383957610374193/768/432/Image/Png/noFilter', title: 'Innocent 🕯️ [HORROR]', descKey: 'innocentDesc' as const, tags: ['Horror'], best: false, placeId: '116402140872647' },
+  { img: 'https://tr.rbxcdn.com/180DAY-59f9cb2004270b8af8a36b3ba77785ad/768/432/Image/Webp/noFilter', title: 'Innocent 🕯️ [HORROR]', descKey: 'innocentDesc' as const, tags: ['Horror'], best: false, placeId: '116402140872647' },
   { img: 'https://tr.rbxcdn.com/180DAY-bfd17a6e0b60793e7ec03131f02932e7/768/432/Image/Webp/noFilter', title: 'RUSSIA: THE WILD 90s RP', descKey: 'russia90sDesc' as const, tags: ['Roleplay'], best: false, placeId: '111479551721846' },
   { img: 'https://tr.rbxcdn.com/180DAY-75c68dfb1f0d52c3ab50a3e2cf42f0d3/768/432/Image/Webp/noFilter', title: 'School 102 RP [Beta]', descKey: 'school102Desc' as const, tags: ['Roleplay'], best: true, placeId: '73413968610508' },
   { img: 'https://tr.rbxcdn.com/180DAY-1f51541ab6b599965d392f630caf23b9/768/432/Image/Webp/noFilter', title: 'Russia Car Driving: Volgograd', descKey: 'volgogradDesc' as const, tags: ['Roleplay'], best: false, placeId: '14765772149' },
@@ -21,6 +21,7 @@ const games = [
   { img: 'https://tr.rbxcdn.com/180DAY-f91557d4217a511ec6d0027e4a9a0742/768/432/Image/Webp/noFilter', title: 'Steal Lucky Block From Brainrots', descKey: 'luckyBrainrotDesc' as const, tags: ['Simulator'], best: true, placeId: '100727356607350' },
   { img: 'https://tr.rbxcdn.com/180DAY-93d18cfc68a973963decd5b3416c02dc/768/432/Image/Webp/noFilter', title: 'Break a Lucky Block for Cars!', descKey: 'luckyCarsDesc' as const, tags: ['Simulator'], best: true, placeId: '94172167755120' },
   { img: 'https://tr.rbxcdn.com/180DAY-500a7c97f4a5c2d7c7b59ecb2c0dabbd/768/432/Image/Webp/noFilter', title: 'My Fishing Soccer Players', descKey: 'fishingSoccerDesc' as const, tags: ['Simulator'], best: false, placeId: '127188114308677' },
+  { img: 'https://tr.rbxcdn.com/180DAY-500a7c97f4a5c2d7c7b59ecb2c0dabbd/768/432/Image/Webp/noFilter', title: 'Swing Obby for Poppy Playtime 5!', descKey: 'obbyPoppyPlaytime5' as const, tags: ['Obby'], best: false, placeId: '125553580825682' },
   { img: 'https://tr.rbxcdn.com/180DAY-ad1d1ae74780bd7b8f210da63bd961a3/768/432/Image/Webp/noFilter', title: '[🚀] Fly to Brainrot', descKey: 'flyToBrainrotDesc' as const, tags: ['Simulator'], best: true, placeId: '89107141752801' },
   { img: 'https://tr.rbxcdn.com/180DAY-65237eb335e373dfa91147515d251b6a/768/432/Image/Webp/noFilter', title: 'Jump for Celebs', descKey: 'jumpForCelebsDesc' as const, tags: ['Simulator'], best: true, placeId: '103136064565960' },
   { img: 'https://tr.rbxcdn.com/180DAY-8985f786acc77af90543b3eb67b9c1e2/768/432/Image/Webp/noFilter', title: 'Super Teamwork', descKey: 'superTeamworkDesc' as const, tags: ['Obby'], best: true, placeId: '15897181617' },
@@ -178,34 +179,34 @@ export function App() {
   const t = translations[lang];
 
   // Loading
-  useEffect(() => {
-    const duration = 2500;
-    const interval = 30;
-    const steps = duration / interval;
-    let currentStep = 0;
+useEffect(() => {
+  const duration = 2500;
+  const interval = 50;
+  const steps = duration / interval;
+  let currentStep = 0;
+  let currentProgress = 0;
 
-    const timer = setInterval(() => {
-      currentStep++;
-      const progress = Math.min(100, (currentStep / steps) * 100 * (1 + Math.random() * 0.1));
-      setLoadingProgress(progress);
+  const timer = setInterval(() => {
+    currentStep++;
+    
+    const linearProgress = currentStep / steps;
+    const easedProgress = 1 - Math.pow(1 - linearProgress, 2);
+    currentProgress = Math.min(100, easedProgress * 100);
+    
+    setLoadingProgress(currentProgress);
 
-      if (currentStep >= steps) {
-        clearInterval(timer);
-        setLoadingProgress(100);
-        setTimeout(() => {
-          setIsExiting(true);
-          setTimeout(() => setIsLoading(false), 600);
-        }, 300);
-      }
-    }, interval);
+    if (currentStep >= steps) {
+      clearInterval(timer);
+      setLoadingProgress(100);
+      setTimeout(() => {
+        setIsExiting(true);
+        setTimeout(() => setIsLoading(false), 600);
+      }, 300);
+    }
+  }, interval);
 
-    return () => clearInterval(timer);
-  }, []);
-
-  const changeLang = useCallback((newLang: Lang) => {
-    setLang(newLang);
-    localStorage.setItem('lang', newLang);
-  }, []);
+  return () => clearInterval(timer);
+}, []);
 
   // Resize
   useEffect(() => {
