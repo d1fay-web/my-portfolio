@@ -64,8 +64,6 @@ function GameImage({ src, alt }: { src: string; alt: string }) {
 
 // ─── Loading Screen ──────────────────────────────────────────────────
 function LoadingScreen({ progress, isExiting }: { progress: number; isExiting: boolean }) {
-  const displayProgress = Math.min(Math.round(progress), 100);
-
   return (
     <div className={`loading-screen ${isExiting ? 'exit' : ''}`}>
       <div className="loading-bg-gradient" />
@@ -90,21 +88,15 @@ function LoadingScreen({ progress, isExiting }: { progress: number; isExiting: b
         <div className="loading-subtitle">Roblox Developer</div>
         <div className="loading-progress-container">
           <div className="loading-progress-bar">
-            <div
-              className="loading-progress-fill"
-              style={{
-                width: `${displayProgress}%`,
-                transition: 'width 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
-              }}
-            />
+            <div className="loading-progress-fill" style={{ width: `${progress}%` }} />
           </div>
-          <div className="loading-progress-text">{displayProgress}%</div>
+          <div className="loading-progress-text">{Math.round(progress)}%</div>
         </div>
         <div className="loading-status">
-          {displayProgress < 30 && 'Initializing...'}
-          {displayProgress >= 30 && displayProgress < 60 && 'Loading assets...'}
-          {displayProgress >= 60 && displayProgress < 90 && 'Preparing experience...'}
-          {displayProgress >= 90 && 'Almost ready...'}
+          {progress < 30 && 'Initializing...'}
+          {progress >= 30 && progress < 60 && 'Loading assets...'}
+          {progress >= 60 && progress < 90 && 'Preparing experience...'}
+          {progress >= 90 && 'Almost ready...'}
         </div>
       </div>
       <div className="loading-corner loading-corner-tl" />
@@ -186,25 +178,19 @@ export function App() {
 
   const t = translations[lang];
 
-  // Loading — плавный прогресс без скачков
+  // Loading
   useEffect(() => {
     const duration = 2500;
     const interval = 30;
-    const totalSteps = duration / interval;
+    const steps = duration / interval;
     let currentStep = 0;
-    let currentProgress = 0;
 
     const timer = setInterval(() => {
       currentStep++;
+      const progress = Math.min(100, (currentStep / steps) * 100 * (1 + Math.random() * 0.1));
+      setLoadingProgress(progress);
 
-      const linearProgress = currentStep / totalSteps;
-      const easedProgress = 1 - Math.pow(1 - linearProgress, 3);
-      const targetProgress = easedProgress * 100;
-
-      currentProgress = Math.min(100, Math.max(currentProgress, targetProgress));
-      setLoadingProgress(currentProgress);
-
-      if (currentStep >= totalSteps) {
+      if (currentStep >= steps) {
         clearInterval(timer);
         setLoadingProgress(100);
         setTimeout(() => {
